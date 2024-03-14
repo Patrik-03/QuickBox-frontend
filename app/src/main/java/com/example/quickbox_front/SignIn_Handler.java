@@ -17,6 +17,7 @@ public class SignIn_Handler extends AppCompatActivity {
         signInHandler = this;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        setTheme(R.style.Theme_QuickBox_Front);
         setContentView(R.layout.signin);
 
         Button signup = (Button) findViewById(R.id.signupB);
@@ -25,6 +26,16 @@ public class SignIn_Handler extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SignIn_Handler.this, SignUp_Handler.class);
                 startActivity(intent);
+            }
+        });
+
+        Button signin = (Button) findViewById(R.id.signinB);
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

@@ -6,26 +6,32 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/quickbox_logo"
+        android:icon="@drawable/quickbox_l"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.QuickBoxFront"
+        android:theme="@style/Theme_QuickBox_Front"
         tools:targetApi="31" >
-
+        <activity
+            android:name=".Home_Handler"
+            android:exported="false" />
         <activity
             android:name=".SignUp_Handler"
             android:exported="false"
-            android:parentActivityName=".SignIn_Handler" />
+            android:parentActivityName=".SignIn_Handler"/>
         <activity
             android:name=".SignIn_Handler"
-            android:exported="true"
-            android:launchMode="singleInstance">
+            android:exported="false"
+            android:parentActivityName=".SplashActivity"/>
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enter_your_email">Zadajte vaše heslo</string>
+    <string name="enter_your_password">Zadajte vaše heslo</string>
+    <string name="sign_in">Prihlásiť sa</string>
+    <string name="don_t_have_account_yet">Ešte nemáte účet?</string>
+    <string name="create">Vytvoriť</string>
+    <string name="sign_up">Registrácia</string>
+    <string name="please_fill_all_the_fields_below">Prosím vyplňte všetky polia uvedené nižšie</string>
+    <string name="enter_email">Zadajte email</string>
+    <string name="enter_street_and_street_number">Zadajte ulicu a číslo domu</string>
+    <string name="enter_city">Zadajte mesto</string>
+    <string name="enter_password">Zadajte heslo</string>
+    <string name="enter_name">Zadajte meno</string>
+    <string name="welcome_back_you_ve_been_missed">Vitajte späť.</string>
+</resources>
