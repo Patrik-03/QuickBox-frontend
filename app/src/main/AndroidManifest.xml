@@ -11,9 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickBoxFront"
         tools:targetApi="31" >
+
         <activity
-            android:name=".MainActivity"
-            android:exported="true" >
+            android:name=".SignUp_Handler"
+            android:exported="false"
+            android:parentActivityName=".SignIn_Handler" />
+        <activity
+            android:name=".SignIn_Handler"
+            android:exported="true"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
