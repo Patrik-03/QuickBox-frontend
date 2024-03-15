@@ -16,4 +16,6 @@
     <string name="enter_your_password">Enter your password</string>
     <string name="logo" translatable="false">logo\n</string>
     <string name="map" translatable="false">map</string>
+    <string name="avatar" translatable="false">avatar</string>
+    <string name="create_delivery">Create delivery</string>
 </resources>

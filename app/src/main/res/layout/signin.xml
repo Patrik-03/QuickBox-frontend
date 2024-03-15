@@ -10,11 +10,11 @@
         android:layout_width="411dp"
         android:layout_height="275dp"
         android:background="#FCAE31"
+        android:contentDescription="@string/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/quickbox_logo"
-        android:contentDescription= "@string/logo" />
+        app:srcCompat="@drawable/quickbox_logo" />
 
     <Button
         android:id="@+id/signinB"
@@ -37,31 +37,32 @@
         android:ems="10"
         android:hint="@string/enter_your_password"
         android:hyphenationFrequency="normal"
+        android:importantForAutofill="no"
         android:inputType="textPassword"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
 
     <EditText
         android:id="@+id/editTextTextEmailAddress"
         style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
         android:layout_width="310dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="48dp"
         android:ems="10"
         android:hint="@string/enter_your_email"
         android:hyphenationFrequency="normal"
+        android:importantForAutofill="no"
         android:inputType="textEmailAddress"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome" />
 
     <TextView
         android:id="@+id/signin"
@@ -69,43 +70,48 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="304dp"
         android:text="@string/sign_in"
-        android:textColor="#000000"
-        android:textSize="34sp"
+        android:textSize="38sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="@string/welcome_back_you_ve_been_missed"
-        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signin" />
 
-    <Button
+
+    <TextView
         android:id="@+id/signupB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="76dp"
+        android:clickable="true"
+        android:minHeight="48dp"
+        android:onClick="signup"
         android:text="@string/sign_up"
-        app:layout_constraintStart_toEndOf="@+id/createacc"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signinB" />
 
     <TextView
         android:id="@+id/createacc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="40dp"
         android:text="@string/don_t_have_account_yet"
-        android:textColor="#000000"
+        android:textAlignment="center"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signinB" />
 

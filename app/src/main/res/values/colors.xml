@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purplelight">#3F51B5</color>
+    <color name="purpledark">#B1AAF3</color>
 
 </resources>

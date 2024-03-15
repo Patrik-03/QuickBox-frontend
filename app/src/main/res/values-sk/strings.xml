@@ -13,4 +13,5 @@
     <string name="enter_password">Zadajte heslo</string>
     <string name="enter_name">Zadajte meno</string>
     <string name="welcome_back_you_ve_been_missed">Vitajte späť.</string>
+    <string name="create_delivery">Vytvoriť dodávku</string>
 </resources>

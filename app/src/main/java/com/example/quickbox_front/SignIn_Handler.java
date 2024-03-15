@@ -1,9 +1,11 @@
 package com.example.quickbox_front;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,10 +19,12 @@ public class SignIn_Handler extends AppCompatActivity {
         signInHandler = this;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setTheme(R.style.Theme_QuickBox_Front);
         setContentView(R.layout.signin);
+        TextView signinT = findViewById(R.id.signin);
+        TextView welcome = findViewById(R.id.welcome);
+        TextView createacc = findViewById(R.id.createacc);
 
-        Button signup = (Button) findViewById(R.id.signupB);
+        TextView signup = findViewById(R.id.signupB);
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -29,7 +33,7 @@ public class SignIn_Handler extends AppCompatActivity {
             }
         });
 
-        Button signin = (Button) findViewById(R.id.signinB);
+        Button signin = findViewById(R.id.signinB);
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
