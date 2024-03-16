@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.QuickBoxFront" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:colorPrimary">@color/purplelight</item>
+        <item name="android:colorPrimary">@color/orange</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:colorAccent">@color/purplelight</item>
         <item name="android:colorSecondary">@color/purplelight</item>
