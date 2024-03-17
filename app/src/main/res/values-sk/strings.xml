@@ -14,4 +14,8 @@
     <string name="enter_name">Zadajte meno</string>
     <string name="welcome_back_you_ve_been_missed">Vitajte späť.</string>
     <string name="create_delivery">Vytvoriť dodávku</string>
+    <string name="errorsignin">Nesprávny email alebo heslo</string>
+    <string name="errorsignup">Účet už existuje</string>
+    <string name="emailenter">Je vyžadovaný email</string>
+    <string name="passwordenter">Je vyžadované heslo</string>
 </resources>

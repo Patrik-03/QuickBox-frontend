@@ -14,4 +14,8 @@
     <string name="enter_your_password">Enter your password</string>
     <string name="sign_in">Sign In</string>
     <string name="create_delivery">Create delivery</string>
+    <string name="errorsignin">Email or password is incorrect</string>
+    <string name="errorsignup">Email is already in use</string>
+    <string name="emailenter">Email is required</string>
+    <string name="passwordenter">Password is required</string>
 </resources>

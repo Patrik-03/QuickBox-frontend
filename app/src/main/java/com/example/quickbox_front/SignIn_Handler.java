@@ -10,11 +10,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -22,7 +17,7 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class SignIn_Handler extends AppCompatActivity {
-    private ArrayList<String> receivedMessage = new ArrayList<>();
+    private String receivedMessage;
     static SignIn_Handler signInHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +31,7 @@ public class SignIn_Handler extends AppCompatActivity {
         // Connect to WebSocket server
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://192.168.1.33:8000/ws")
+                .url("ws://192.168.1.33:8000/ws/signin")
                 .build();
 
         WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -47,21 +42,33 @@ public class SignIn_Handler extends AppCompatActivity {
                         Log.d("WebSocket", "Connection established");
                     }
 
-                    @Override
-                    public void onMessage(WebSocket webSocket, String text) {
-                        Log.d("WebSocket", "Received message: " + text);
-                        // save the result of the request in a variable
-                        JSONObject jsonObject = null;
-                        String content = "";
-                        try {
-                            jsonObject = new JSONObject(text);
-                            content = jsonObject.getString("content");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                Log.d("WebSocket", "Received message: " + text);
+                receivedMessage = text;
+
+                // Check received message
+                if (receivedMessage.equals("true")) {
+                    // If credentials are correct, start Home_Handler activity
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
+                            startActivity(intent);
+                            finish();
                         }
-                        receivedMessage.add(content);
-                        Log.d("WebSocket", "Received: " + receivedMessage);
-                    }
+                    });
+                } else {
+                    // If credentials are incorrect, show error message
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            email.setError(getString(R.string.errorsignin));
+                            password.setError(getString(R.string.errorsignin));
+                        }
+                    });
+                }
+            }
 
                     @Override
                     public void onClosed(WebSocket webSocket, int code, String reason) {
@@ -78,8 +85,8 @@ public class SignIn_Handler extends AppCompatActivity {
         email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(email.getText().toString().isEmpty()){
-                    email.setError("Email is required");
+                    if(email.getText().toString().isEmpty()){
+                        email.setError(getString(R.string.emailenter));
                 }
             }
         });
@@ -87,7 +94,7 @@ public class SignIn_Handler extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(password.getText().toString().isEmpty()){
-                    password.setError("Password is required");
+                    password.setError(getString(R.string.passwordenter));
                 }
             }
         });
@@ -106,15 +113,8 @@ public class SignIn_Handler extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                webSocket.send("{\"type\": \"signInEmail\", \"content\": \"" + email.getText().toString() + "\"}");
-                webSocket.send("{\"type\": \"signInPassword\", \"content\": \"" + password.getText().toString() + "\"}");
-                // if the receivedMessage list contains only true values, then the user is signed in
-                Log.d("WebSocket", "message: " + receivedMessage);
-                if (receivedMessage.size() == 2 && receivedMessage.get(0).equals("true") && receivedMessage.get(1).equals("true")) {
-                    Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
-                    startActivity(intent);
-                    finish();
-                }
+                // Send credentials to server
+                webSocket.send("{\"signInEmail\": \"" + email.getText().toString() + "\" , \"signInPassword\" : \"" + password.getText().toString() + "\"}");
             }
         });
     }

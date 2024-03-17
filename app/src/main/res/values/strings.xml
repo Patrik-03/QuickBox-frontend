@@ -18,4 +18,9 @@
     <string name="map" translatable="false">map</string>
     <string name="avatar" translatable="false">avatar</string>
     <string name="create_delivery">Create delivery</string>
+    <string name="errorsignin">Email or password is incorrect</string>
+    <string name="emailenter">Email is required</string>
+    <string name="passwordenter">Password is required</string>
+    <string name="errorsignup">Email is already in use</string>
+
 </resources>
