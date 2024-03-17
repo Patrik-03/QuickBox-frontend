@@ -7,7 +7,7 @@
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/mapH"
         android:layout_width="385dp"
         android:layout_height="332dp"
         android:layout_marginStart="13dp"
@@ -27,15 +27,16 @@
         android:layout_width="wrap_content"
         android:layout_height="250dp"
         android:background="#FCAC32"
+        android:contentDescription="@string/logo"
         android:scaleType="fitStart"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        motion:srcCompat="@drawable/quickbox_logo"
-        android:contentDescription="@string/logo" />
+        motion:srcCompat="@drawable/quickbox_logo" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/profileH"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="56dp"
@@ -58,10 +59,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="invisible"></androidx.viewpager.widget.ViewPager>
+        tools:visibility="invisible" />
 
     <Button
-        android:id="@+id/createdel"
+        android:id="@+id/history"
         android:layout_width="360dp"
         android:layout_height="70dp"
         android:layout_marginStart="160dp"
@@ -81,12 +82,12 @@
         android:id="@+id/nameH"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="232dp"
+        android:layout_marginStart="228dp"
         android:layout_marginTop="20dp"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/profileH" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

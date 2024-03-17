@@ -19,7 +19,7 @@
         motion:srcCompat="@drawable/quickbox_logo" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/profileH"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="28dp"
@@ -35,7 +35,7 @@
         tools:visibility="visible" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/mapH"
         android:layout_width="250dp"
         android:layout_height="380dp"
         android:layout_marginStart="28dp"
@@ -61,7 +61,7 @@
     </androidx.viewpager.widget.ViewPager>
 
     <Button
-        android:id="@+id/createdel"
+        android:id="@+id/history"
         android:layout_width="340dp"
         android:layout_height="70dp"
         android:layout_marginStart="28dp"
