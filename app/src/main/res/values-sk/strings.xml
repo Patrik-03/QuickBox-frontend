@@ -8,7 +8,7 @@
     <string name="sign_up">Registrácia</string>
     <string name="please_fill_all_the_fields_below">Prosím vyplňte všetky polia uvedené nižšie</string>
     <string name="enter_email">Zadajte email</string>
-    <string name="enter_street_and_street_number">Zadajte ulicu a číslo domu</string>
+    <string name="enter_street">Zadajte názov ulice</string>
     <string name="enter_city">Zadajte mesto</string>
     <string name="enter_password">Zadajte heslo</string>
     <string name="enter_name">Zadajte meno</string>
@@ -18,4 +18,6 @@
     <string name="errorsignup">Účet už existuje</string>
     <string name="emailenter">Je vyžadovaný email</string>
     <string name="passwordenter">Je vyžadované heslo</string>
+    <string name="enter_street_num">Čís.</string>
+    <string name="wrongfromat">Chýba @ alebo .</string>
 </resources>

@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBarUp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="156dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="411dp"
@@ -34,6 +45,7 @@
         android:layout_width="310dp"
         android:layout_height="50dp"
         android:layout_marginTop="36dp"
+        android:layout_marginBottom="75dp"
         android:ems="10"
         android:hint="@string/enter_your_password"
         android:hyphenationFrequency="normal"
@@ -41,6 +53,7 @@
         android:inputType="textPassword"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/signinB"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,25 +106,35 @@
         android:id="@+id/signupB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="76dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="122dp"
         android:clickable="true"
         android:minHeight="48dp"
         android:onClick="signup"
         android:text="@string/sign_up"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signinB" />
+        app:layout_constraintStart_toEndOf="@+id/createacc"
+        app:layout_constraintTop_toBottomOf="@+id/signinB"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/createacc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
+        android:layout_marginStart="56dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="143dp"
         android:text="@string/don_t_have_account_yet"
         android:textAlignment="center"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/signupB"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signinB" />
 

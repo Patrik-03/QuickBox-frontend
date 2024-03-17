@@ -7,7 +7,8 @@
     <string name="create">Create</string>
     <string name="please_fill_all_the_fields_below">Please fill all the fields below</string>
     <string name="enter_email">Enter email</string>
-    <string name="enter_street_and_street_number">Enter street and street number</string>
+    <string name="enter_street">Enter street name</string>
+    <string name="enter_street_num">Num.</string>
     <string name="enter_city">Enter city</string>
     <string name="enter_password">Enter password</string>
     <string name="enter_name">Enter name</string>
@@ -20,6 +21,7 @@
     <string name="create_delivery">Create delivery</string>
     <string name="errorsignin">Email or password is incorrect</string>
     <string name="emailenter">Email is required</string>
+    <string name="wrongfromat">Missing @ or .</string>
     <string name="passwordenter">Password is required</string>
     <string name="errorsignup">Email is already in use</string>
 

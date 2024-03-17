@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBarUp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.759"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="422dp"
@@ -18,6 +30,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/quickbox_logo" />
 
+
     <Button
         android:id="@+id/signinB"
         android:layout_width="320dp"
@@ -26,34 +39,40 @@
         android:text="@string/sign_in"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.855"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toEndOf="@+id/logo"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
-    <EditText
-        android:id="@+id/editTextTextPassword"
-        style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="@string/enter_your_password"
-        android:hyphenationFrequency="normal"
-        android:importantForAutofill="no"
-        android:inputType="textPassword"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/welcome_back_you_ve_been_missed"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.846"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+        app:layout_constraintHorizontal_bias="0.542"
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toBottomOf="@+id/signin" />
+
+    <TextView
+        android:id="@+id/signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/sign_in"
+        android:textSize="38sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextTextEmailAddress"
         style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
         android:layout_width="310dp"
         android:layout_height="50dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/enter_your_email"
         android:hyphenationFrequency="normal"
@@ -63,34 +82,27 @@
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.846"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.554"
+        app:layout_constraintStart_toEndOf="@+id/logo"
         app:layout_constraintTop_toBottomOf="@+id/welcome" />
 
-    <TextView
-        android:id="@+id/signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="@string/sign_in"
-        android:textSize="38sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.762"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/welcome_back_you_ve_been_missed"
+    <EditText
+        android:id="@+id/editTextTextPassword"
+        style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
+        android:layout_width="310dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="@string/enter_your_password"
+        android:hyphenationFrequency="normal"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.82"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signin" />
+        app:layout_constraintHorizontal_bias="0.554"
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
 
     <TextView
         android:id="@+id/signupB"
@@ -98,8 +110,6 @@
         android:layout_height="48dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="140dp"
-        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:minHeight="48dp"
         android:onClick="signup"
@@ -107,25 +117,22 @@
         android:textAllCaps="false"
         android:textSize="20sp"
         android:textStyle="bold|italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/createacc"
-        app:layout_constraintTop_toBottomOf="@+id/signinB"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/signinB" />
 
     <TextView
         android:id="@+id/createacc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="508dp"
+        android:layout_marginStart="104dp"
         android:layout_marginTop="104dp"
         android:layout_marginBottom="18dp"
         android:text="@string/don_t_have_account_yet"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
