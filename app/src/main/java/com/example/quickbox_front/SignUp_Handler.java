@@ -36,6 +36,8 @@ public class SignUp_Handler extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SignIn_Handler signInHandler = new SignIn_Handler();
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.signup);
@@ -51,7 +53,7 @@ public class SignUp_Handler extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://192.168.1.33:8000/ws/signup")
+                .url("ws://10.15.67.112:8000/ws/signup")
                 .build();
 
         WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -59,7 +61,7 @@ public class SignUp_Handler extends AppCompatActivity {
             public void onOpen(WebSocket webSocket, Response response) {
                 // WebSocket connection established
                 super.onOpen(webSocket, response);
-                Log.d("WebSocket", "Connection established");
+                Log.d("WebSocket", "Connection established (Sign Up)");
             }
 
             @Override
@@ -76,34 +78,37 @@ public class SignUp_Handler extends AppCompatActivity {
                 // Check received message
                 if (result.equals("ok") && email.getText().toString().contains("@") && email.getText().toString().contains(".")){
                     // If credentials are correct, start Home_Handler activity
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setVisibility(View.GONE);
-                            SignIn_Handler.getInstance().finish();
-                            Intent intent = new Intent(SignUp_Handler.this, Home_Handler.class);
-                            startActivity(intent);
-                            webSocket.close(1000, "Goodbye, World!");
-                            finish();
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        signInHandler.finish();
+                        Intent intent = new Intent(SignUp_Handler.this, Home_Handler.class);
+                        intent.putExtra("email", email.getText().toString());
+                        if (webSocket != null) {
+                            signInHandler.closeWebSocketConnection();
+                            webSocket.close(1000, "Closing the connection");
                         }
+                        startActivity(intent);
+                        finish();
                     });
+                } else if (!email.getText().toString().contains("@") || !email.getText().toString().contains(".")
+                        || result.equals("ok")) {
+                    progressBar.setVisibility(View.GONE);
+                    create.setVisibility(View.VISIBLE);
+                    email.setError(getString(R.string.wrongfromat));
                 } else {
                     // If credentials are incorrect, show error message
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setVisibility(View.GONE);
-                            create.setVisibility(View.VISIBLE);
-                            TextView error = findViewById(R.id.error);
-                            error.setText(getString(R.string.errorsignup));
-                        }
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        create.setVisibility(View.VISIBLE);
+                        TextView error = findViewById(R.id.error);
+                        error.setText(getString(R.string.errorsignup));
                     });
                 }
             }
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
-                Log.d("WebSocket", "Connection closed");
+                Log.d("WebSocket", "Connection closed (Sign Up)");
             }
 
             @Override
@@ -111,41 +116,32 @@ public class SignUp_Handler extends AppCompatActivity {
                 Log.e("WebSocket", "Connection failed: " + t.getMessage());
             }
         });
-        email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!email.getText().toString().contains("@") || !email.getText().toString().contains(".")){
-                    email.setError(getString(R.string.wrongfromat));
-                }
+        email.setOnFocusChangeListener((v, hasFocus) -> {
+            if(!email.getText().toString().contains("@") || !email.getText().toString().contains(".")){
+                email.setError(getString(R.string.wrongfromat));
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webSocket.close(1000, "Goodbye, World!");
-                finish();
-            }
+        back.setOnClickListener(v -> {
+            webSocket.close(1000, "Closing the connection");
+            finish();
         });
 
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                create.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("name", name.getText().toString());
-                    json.put("email", email.getText().toString());
-                    json.put("password", password.getText().toString());
-                    json.put("city", city.getText().toString());
-                    json.put("street", street.getText().toString());
-                    json.put("street_number", street_number.getText().toString());
-                    json.put("qr_code", bitmapToByteArray(generateQRCode(email.getText().toString())));
-                    webSocket.send(json.toString());
-                } catch (Exception e) {
-                    Log.e("WebSocket", "Error: " + e.getMessage());
-                }
+        create.setOnClickListener(v -> {
+            create.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            JSONObject json = new JSONObject();
+            try {
+                json.put("name", name.getText().toString());
+                json.put("email", email.getText().toString());
+                json.put("password", password.getText().toString());
+                json.put("city", city.getText().toString());
+                json.put("street", street.getText().toString());
+                json.put("street_number", street_number.getText().toString());
+                json.put("qr_code", bitmapToByteArray(generateQRCode(email.getText().toString())));
+                webSocket.send(json.toString());
+            } catch (Exception e) {
+                Log.e("WebSocket", "Error: " + e.getMessage());
             }
         });
     }

@@ -20,4 +20,9 @@
     <string name="passwordenter">Je vyžadované heslo</string>
     <string name="enter_street_num">Čís.</string>
     <string name="wrongfromat">Chýba @ alebo .</string>
+    <string name="history">História</string>
+    <string name="language">Jazyk</string>
+    <string name="signout">Odhlásiť sa</string>
+    <string name="darkmode">Tmavý režim</string>
+    <string name="lightmode">Svetlý režim</string>
 </resources>

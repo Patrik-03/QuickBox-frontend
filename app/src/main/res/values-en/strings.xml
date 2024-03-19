@@ -15,9 +15,14 @@
     <string name="sign_in">Sign In</string>
     <string name="create_delivery">Create delivery</string>
     <string name="errorsignin">Email or password is incorrect</string>
-    <string name="errorsignup">Email is already in use</string>
+    <string name="errorsignup">Account already exists</string>
     <string name="emailenter">Email is required</string>
     <string name="passwordenter">Password is required</string>
     <string name="enter_street_num">Num.</string>
     <string name="wrongfromat">Missing @ or .</string>
+    <string name="history">History</string>
+    <string name="language">Language</string>
+    <string name="signout">Sign Out</string>
+    <string name="darkmode">Dark Mode</string>
+    <string name="lightmode">Light Mode</string>
 </resources>

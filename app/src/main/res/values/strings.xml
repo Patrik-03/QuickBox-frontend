@@ -23,6 +23,11 @@
     <string name="emailenter">Email is required</string>
     <string name="wrongfromat">Missing @ or .</string>
     <string name="passwordenter">Password is required</string>
-    <string name="errorsignup">Email is already in use</string>
+    <string name="errorsignup">Account already exists</string>
+    <string name="history">History</string>
+    <string name="language">Language</string>
+    <string name="signout">Sign Out</string>
+    <string name="darkmode">Dark Mode</string>
+    <string name="lightmode">Light Mode</string>
 
 </resources>

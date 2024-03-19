@@ -23,9 +23,9 @@
         android:layout_height="70dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="@string/create_delivery"
+        android:text="@string/history"
         android:textAlignment="center"
-        android:textSize="28dp"
+        android:textSize="28sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
         tools:ignore="VisualLintButtonSize" />
@@ -36,35 +36,22 @@
         android:layout_height="70dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:text="@string/create_delivery"
-        android:textAlignment="center"
-        android:textSize="28dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/history"
-        tools:ignore="VisualLintButtonSize" />
-
-    <Switch
-        android:id="@+id/darkmode"
-        android:layout_width="360dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="Switch"
+        android:text="@string/language"
         android:textAlignment="center"
         android:textSize="28sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/language"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@+id/history"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/signout"
         android:layout_width="360dp"
         android:layout_height="70dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/create_delivery"
+        android:layout_marginTop="48dp"
+        android:text="@string/signout"
         android:textAlignment="center"
-        android:textSize="28dp"
+        android:textSize="28sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qr_code"
         tools:ignore="VisualLintButtonSize" />
@@ -74,9 +61,9 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="92dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/darkmode"
+        app:layout_constraintTop_toBottomOf="@+id/language"
         tools:srcCompat="@drawable/quickbox_l" />
 
     <TextView
@@ -85,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="112dp"
+        android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
+        android:textAlignment="center"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameP" />

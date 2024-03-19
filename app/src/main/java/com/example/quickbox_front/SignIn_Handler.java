@@ -23,11 +23,9 @@ import okhttp3.WebSocketListener;
 
 public class SignIn_Handler extends AppCompatActivity {
     private JSONObject receivedMessage;
-    static SignIn_Handler signInHandler;
-    static WebSocket webSocket;
+    private WebSocket webSocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        signInHandler = this;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.signin);
@@ -43,7 +41,7 @@ public class SignIn_Handler extends AppCompatActivity {
         // Connect to WebSocket server
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://192.168.1.33:8000/ws/signin")
+                .url("ws://10.15.67.112:8000/ws/signin")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -51,7 +49,7 @@ public class SignIn_Handler extends AppCompatActivity {
                     public void onOpen(WebSocket webSocket, Response response) {
                         // WebSocket connection established
                         super.onOpen(webSocket, response);
-                        Log.d("WebSocket", "Connection established");
+                        Log.d("WebSocket", "Connection established (Sign In");
                     }
 
             @Override
@@ -67,35 +65,32 @@ public class SignIn_Handler extends AppCompatActivity {
                 // Check received message
                 if (result.equals("True")) {
                     // If credentials are correct, start Home_Handler activity
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setVisibility(View.GONE);
-                            Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
-                            startActivity(intent);
-                            webSocket.close(1000, "Goodbye, World!");
-                            finish();
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
+                        intent.putExtra("email", email.getText().toString());
+                        if (webSocket != null) {
+                            webSocket.close(1000, "Closing the connection");
                         }
+                        startActivity(intent);
+                        finish();
                     });
                 } else {
                     // If credentials are incorrect, show error message
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setVisibility(View.GONE);
-                            signin.setVisibility(View.VISIBLE);
-                            signup.setVisibility(View.VISIBLE);
-                            textcreate.setVisibility(View.VISIBLE);
-                            email.setError(getString(R.string.errorsignin));
-                            password.setError(getString(R.string.errorsignin));
-                        }
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        signin.setVisibility(View.VISIBLE);
+                        signup.setVisibility(View.VISIBLE);
+                        textcreate.setVisibility(View.VISIBLE);
+                        email.setError(getString(R.string.errorsignin));
+                        password.setError(getString(R.string.errorsignin));
                     });
                 }
             }
 
                     @Override
                     public void onClosed(WebSocket webSocket, int code, String reason) {
-                        Log.d("WebSocket", "Connection closed");
+                        Log.d("WebSocket", "Connection closed (Sign In)");
                     }
 
                     @Override
@@ -105,56 +100,41 @@ public class SignIn_Handler extends AppCompatActivity {
                 });
 
         //check iuf the user write the email and password
-        email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                    if(email.getText().toString().isEmpty()){
-                        email.setError(getString(R.string.emailenter));
-                }
+        email.setOnFocusChangeListener((v, hasFocus) -> {
+                if(email.getText().toString().isEmpty()){
+                    email.setError(getString(R.string.emailenter));
             }
         });
-        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(password.getText().toString().isEmpty()){
-                    password.setError(getString(R.string.passwordenter));
-                }
+        password.setOnFocusChangeListener((v, hasFocus) -> {
+            if(password.getText().toString().isEmpty()){
+                password.setError(getString(R.string.passwordenter));
             }
         });
 
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SignIn_Handler.this, SignUp_Handler.class);
-                startActivity(intent);
-            }
+        signup.setOnClickListener(v -> {
+            Intent intent = new Intent(SignIn_Handler.this, SignUp_Handler.class);
+            startActivity(intent);
         });
 
-        signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signin.setVisibility(View.GONE);
-                signup.setVisibility(View.GONE);
-                textcreate.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("signInEmail", email.getText().toString());
-                    jsonObject.put("signInPassword", password.getText().toString());
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                // Send credentials to server
-                webSocket.send(jsonObject.toString());
+        signin.setOnClickListener(v -> {
+            signin.setVisibility(View.GONE);
+            signup.setVisibility(View.GONE);
+            textcreate.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("signInEmail", email.getText().toString());
+                jsonObject.put("signInPassword", password.getText().toString());
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
+            // Send credentials to server
+            webSocket.send(jsonObject.toString());
         });
     }
-    public static void closeWebSocketConnection() {
+    public void closeWebSocketConnection() {
         if (webSocket != null) {
-            webSocket.close(1000, "Goodbye, World!");
+            webSocket.close(1000, "Closing the connection");
         }
-    }
-    public static SignIn_Handler getInstance() {
-        return signInHandler;
     }
 }

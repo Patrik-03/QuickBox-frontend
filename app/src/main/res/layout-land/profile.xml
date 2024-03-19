@@ -7,84 +7,69 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="wrap_content"
-        android:layout_height="230dp"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
         android:background="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/history"
-        android:layout_width="360dp"
+        android:layout_width="300dp"
         android:layout_height="70dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/create_delivery"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/history"
         android:textAlignment="center"
-        android:textSize="28dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/language"
-        android:layout_width="360dp"
+        android:layout_width="300dp"
         android:layout_height="70dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/create_delivery"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/language"
         android:textAlignment="center"
-        android:textSize="28dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/history"
         tools:ignore="VisualLintButtonSize" />
 
-    <Switch
-        android:id="@+id/darkmode"
-        android:layout_width="360dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="Switch"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/language"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
-
     <Button
         android:id="@+id/signout"
-        android:layout_width="360dp"
+        android:layout_width="300dp"
         android:layout_height="70dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/create_delivery"
+        android:layout_marginTop="123dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/signout"
         android:textAlignment="center"
-        android:textSize="28dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qr_code"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/language"
         tools:ignore="VisualLintButtonSize" />
 
     <ImageView
         android:id="@+id/qr_code"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/darkmode"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/language"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/backP"
         tools:srcCompat="@drawable/quickbox_l" />
 
     <TextView
         android:id="@+id/nameP"
-        android:layout_width="360dp"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="152dp"
+        android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,10 +77,11 @@
 
     <TextView
         android:id="@+id/emailP"
-        android:layout_width="360dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="24dp"
+        android:textAlignment="center"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameP" />
@@ -104,8 +90,8 @@
         android:id="@+id/backP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="28dp"
         android:text="Back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

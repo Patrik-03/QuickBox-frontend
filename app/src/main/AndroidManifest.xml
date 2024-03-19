@@ -15,8 +15,7 @@
         android:networkSecurityConfig="@xml/network_sec"
         >
         <activity android:name=".Profile_Handler"
-            android:exported="false"
-            android:parentActivityName=".Home_Handler"/>
+            android:exported="false"/>
         <activity
             android:name=".Home_Handler"
             android:exported="false"/>
