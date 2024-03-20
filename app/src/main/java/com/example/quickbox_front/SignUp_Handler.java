@@ -33,6 +33,7 @@ import okhttp3.WebSocketListener;
 
 public class SignUp_Handler extends AppCompatActivity {
     private JSONObject receivedMessage;
+    IPServer ipServer = new IPServer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class SignUp_Handler extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://10.15.67.112:8000/ws/signup")
+                .url("ws://" + ipServer.getIp() + ":8000/ws/signup")
                 .build();
 
         WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -83,10 +84,8 @@ public class SignUp_Handler extends AppCompatActivity {
                         signInHandler.finish();
                         Intent intent = new Intent(SignUp_Handler.this, Home_Handler.class);
                         intent.putExtra("email", email.getText().toString());
-                        if (webSocket != null) {
-                            signInHandler.closeWebSocketConnection();
-                            webSocket.close(1000, "Closing the connection");
-                        }
+                        signInHandler.closeWebSocketConnection();
+                        webSocket.close(1000, "Closing the connection");
                         startActivity(intent);
                         finish();
                     });
@@ -140,6 +139,7 @@ public class SignUp_Handler extends AppCompatActivity {
                 json.put("street_number", street_number.getText().toString());
                 json.put("qr_code", bitmapToByteArray(generateQRCode(email.getText().toString())));
                 webSocket.send(json.toString());
+                generateQRCode(email.getText().toString()).recycle();
             } catch (Exception e) {
                 Log.e("WebSocket", "Error: " + e.getMessage());
             }

@@ -33,24 +33,27 @@
 
     <EditText
         android:id="@+id/city"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="88dp"
-        android:layout_marginTop="124dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/enter_city"
         android:inputType="text"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/name"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.814"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.409"
+        app:layout_constraintWidth_percent="0.35" />
 
     <EditText
         android:id="@+id/email"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/enter_email"
@@ -60,26 +63,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintWidth_percent="0.35"/>
 
     <EditText
         android:id="@+id/name"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:ems="10"
         android:hint="@string/enter_name"
         android:inputType="text"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.12"
         app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.412"
+        app:layout_constraintWidth_percent="0.35" />
 
     <EditText
         android:id="@+id/passw"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/enter_password"
@@ -89,12 +97,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintWidth_percent="0.35"/>
 
     <EditText
         android:id="@+id/street_num"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="51dp"
@@ -102,71 +112,87 @@
         android:hint="@string/enter_street_num"
         android:importantForAutofill="no"
         android:inputType="number"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.12"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/street"
-        app:layout_constraintTop_toBottomOf="@+id/city" />
+        app:layout_constraintTop_toBottomOf="@+id/city"
+        app:layout_constraintWidth_percent="0.06" />
 
     <EditText
         android:id="@+id/street"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="88dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="92dp"
         android:layout_marginTop="32dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/enter_street"
         android:inputType="text"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/email"
-        app:layout_constraintTop_toBottomOf="@+id/city" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.721"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/city"
+        app:layout_constraintWidth_percent="0.28" />
 
     <Button
         android:id="@+id/create"
-        android:layout_width="320dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="20dp"
         android:text="@string/create"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/passw"
-        app:layout_constraintTop_toBottomOf="@+id/street" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHorizontal_bias="0.816"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/street"
+        app:layout_constraintVertical_bias="0.047"
+        app:layout_constraintWidth_percent="0.35" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="@string/sign_up"
         android:textSize="38sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.188"
+        app:layout_constraintHorizontal_bias="0.229"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.08" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:text="@string/please_fill_all_the_fields_below"
         android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.202"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/error"
-        android:layout_width="310dp"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="115dp"
-        android:layout_marginTop="79dp"
-        android:layout_marginEnd="112dp"
+        android:layout_marginTop="80dp"
         android:textColor="#FF0000"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHorizontal_bias="0.803"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.35" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

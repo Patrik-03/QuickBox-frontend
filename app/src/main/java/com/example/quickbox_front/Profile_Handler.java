@@ -36,7 +36,9 @@ public class Profile_Handler extends AppCompatActivity {
         email.setText(emailH);
         qr_code.setImageBitmap(bitmap);
 
-        back.setOnClickListener(v -> finish());
+        back.setOnClickListener(v -> {
+            finish();
+        });
 
         signout.setOnClickListener(v -> {
             Intent intent = new Intent(Profile_Handler.this, SignIn_Handler.class);

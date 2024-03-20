@@ -8,81 +8,102 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#FCAC32"
         android:contentDescription="@string/logo"
         android:scaleType="fitEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        motion:srcCompat="@drawable/quickbox_logo" />
+        motion:srcCompat="@drawable/quickbox_logo"
+        app:layout_constraintHeight_percent="1"
+        app:layout_constraintWidth_percent="0.3"/>
 
     <ImageButton
         android:id="@+id/profileH"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#00FBAB32"
         android:backgroundTint="#00DBDBDB"
         android:contentDescription="@string/avatar"
         android:scaleType="centerCrop"
         android:src="@drawable/avatar"
-        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.17"
+        app:layout_constraintHorizontal_bias="0.122"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.178"
+        app:layout_constraintWidth_percent="0.08"
         tools:srcCompat="@tools:sample/avatars"
         tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/mapH"
-        android:layout_width="250dp"
-        android:layout_height="380dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/round_corners"
         android:contentDescription="@string/map"
         android:scaleType="centerCrop"
         android:src="@drawable/quickbox_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintHorizontal_bias="0.642"
         app:layout_constraintStart_toEndOf="@+id/viewPager"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.463"
+        app:layout_constraintWidth_percent="0.27" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="340dp"
-        android:layout_height="160dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="140dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
         android:background="@drawable/round_corners"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHorizontal_bias="0.118"
         app:layout_constraintStart_toEndOf="@+id/logo"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameH"
+        app:layout_constraintWidth_percent="0.35"
         tools:visibility="invisible">
 
     </androidx.viewpager.widget.ViewPager>
 
     <Button
         android:id="@+id/history"
-        android:layout_width="340dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeTextType="uniform"
         android:text="@string/create_delivery"
         android:textAlignment="center"
-        android:textSize="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHorizontal_bias="0.118"
         app:layout_constraintStart_toEndOf="@+id/logo"
         app:layout_constraintTop_toBottomOf="@+id/viewPager"
+        app:layout_constraintVertical_bias="0.592"
+        app:layout_constraintWidth_percent="0.35"
         tools:ignore="VisualLintButtonSize" />
 
     <TextView
         android:id="@+id/nameH"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="52dp"
-        android:textSize="24sp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeTextType="uniform"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHorizontal_bias="0.118"
+        app:layout_constraintStart_toEndOf="@+id/logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.052"
+        app:layout_constraintWidth_percent="0.35" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

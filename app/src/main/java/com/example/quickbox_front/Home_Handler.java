@@ -23,6 +23,7 @@ import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
     private WebSocket webSocket;
+    IPServer ipServer = new IPServer();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +46,7 @@ public class Home_Handler extends AppCompatActivity {
         viewPager.setAdapter(myPagerAdapter);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://10.15.67.112:8000/ws/home")
+                .url("ws://" + ipServer.getIp() + ":8000/ws/home")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {

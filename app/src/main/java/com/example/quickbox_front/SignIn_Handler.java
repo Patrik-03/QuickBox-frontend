@@ -23,6 +23,8 @@ import okhttp3.WebSocketListener;
 
 public class SignIn_Handler extends AppCompatActivity {
     private JSONObject receivedMessage;
+    IPServer ipServer = new IPServer();
+
     private WebSocket webSocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class SignIn_Handler extends AppCompatActivity {
         // Connect to WebSocket server
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://10.15.67.112:8000/ws/signin")
+                .url("ws://" + ipServer.getIp() + ":8000/ws/signin")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -49,7 +51,7 @@ public class SignIn_Handler extends AppCompatActivity {
                     public void onOpen(WebSocket webSocket, Response response) {
                         // WebSocket connection established
                         super.onOpen(webSocket, response);
-                        Log.d("WebSocket", "Connection established (Sign In");
+                        Log.d("WebSocket", "Connection established (Sign In)");
                     }
 
             @Override
@@ -69,9 +71,7 @@ public class SignIn_Handler extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
                         intent.putExtra("email", email.getText().toString());
-                        if (webSocket != null) {
-                            webSocket.close(1000, "Closing the connection");
-                        }
+                        webSocket.close(1000, "Closing the connection");
                         startActivity(intent);
                         finish();
                     });
