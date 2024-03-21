@@ -25,4 +25,6 @@
     <string name="signout">Odhlásiť sa</string>
     <string name="darkmode">Tmavý režim</string>
     <string name="lightmode">Svetlý režim</string>
+    <string name="english">Angličtina</string>
+    <string name="slovak">Slovenčina</string>
 </resources>

@@ -147,24 +147,32 @@ public class SignUp_Handler extends AppCompatActivity {
     }
 
     private Bitmap generateQRCode(String email) {
+        if (email == null || email.isEmpty()) {
+            Log.e("QRCode", "Error: Email is null or empty");
+            return null;
+        }
+
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
             BitMatrix bitMatrix = qrCodeWriter.encode(email, BarcodeFormat.QR_CODE, 200, 200, hints);
+
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     bitmap.setPixel(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
                 }
             }
-            Log.d("QRCode", "QR code generated:" + bitmap.toString());
+
+            Log.d("QRCode", "QR code generated:" + bitmap);
             return bitmap;
         } catch (WriterException e) {
             Log.e("QRCode", "Error generating QR code: " + e.getMessage());
-            return Bitmap.createBitmap(200, 200, Bitmap.Config.RGB_565);
+            return null;
         }
     }
 

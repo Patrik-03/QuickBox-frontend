@@ -45,10 +45,25 @@ public class Profile_Handler extends AppCompatActivity {
             startActivity(intent);
             finish();
             homeHandler.finish();
+            homeHandler.closeWebSocketConnectionHome();
+        });
+
+        history.setOnClickListener(v -> {
+            Intent intent = new Intent(Profile_Handler.this, History_Handler.class);
+            intent.putExtra("email", emailH);
+            startActivity(intent);
+        });
+
+        language.setOnClickListener(v -> {
+            Intent intent = new Intent(Profile_Handler.this, Language_Handler.class);
+            startActivity(intent);
         });
     }
 
     public Bitmap byteArrayToBitmap(byte[] byteArray) {
+        if (byteArray == null || byteArray.length == 0) {
+            return null;
+        }
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
     }
 }

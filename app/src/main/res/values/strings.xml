@@ -29,5 +29,7 @@
     <string name="signout">Sign Out</string>
     <string name="darkmode">Dark Mode</string>
     <string name="lightmode">Light Mode</string>
+    <string name="english">English</string>
+    <string name="slovak">Slovak</string>
 
 </resources>
