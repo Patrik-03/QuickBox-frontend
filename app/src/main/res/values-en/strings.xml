@@ -27,4 +27,6 @@
     <string name="lightmode">Light Mode</string>
     <string name="english">English</string>
     <string name="slovak">Slovak</string>
+    <string name="sign_inT">Sign In</string>
+    <string name="currentLang">Current language</string>
 </resources>

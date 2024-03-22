@@ -1,8 +1,12 @@
 package com.example.quickbox_front;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -30,6 +36,7 @@ public class SignIn_Handler extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        loadLocale();
         setContentView(R.layout.signin);
 
         TextView email = findViewById(R.id.editTextTextEmailAddress);
@@ -72,8 +79,8 @@ public class SignIn_Handler extends AppCompatActivity {
                         Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
                         intent.putExtra("email", email.getText().toString());
                         webSocket.close(1000, "Closing the connection");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Add this line
                         startActivity(intent);
-                        finish();
                     });
                 } else {
                     // If credentials are incorrect, show error message
@@ -132,7 +139,23 @@ public class SignIn_Handler extends AppCompatActivity {
             webSocket.send(jsonObject.toString());
         });
     }
-    public void closeWebSocketConnection() {
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        String language = preferences.getString("My_Lang", "");
+        setLocale(language);
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = locale;
+        res.updateConfiguration(conf, dm);
+    }
+
+        public void closeWebSocketConnection() {
         if (webSocket != null) {
             webSocket.close(1000, "Closing the connection");
         }

@@ -27,4 +27,6 @@
     <string name="lightmode">Svetlý režim</string>
     <string name="english">Angličtina</string>
     <string name="slovak">Slovenčina</string>
+    <string name="sign_inT">Prihlásenie</string>
+    <string name="currentLang">Aktuálny jazyk</string>
 </resources>

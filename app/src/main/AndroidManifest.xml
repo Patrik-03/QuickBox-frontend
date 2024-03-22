@@ -14,28 +14,20 @@
         tools:targetApi="31"
         android:networkSecurityConfig="@xml/network_sec"
         >
-        <activity android:name=".Language_Handler"
-            android:exported="false"
-            android:parentActivityName=".Profile_Handler"/>
-        <activity android:name=".Profile_Handler"
-            android:exported="false"
-            android:parentActivityName=".Home_Handler"/>
-        <activity
-            android:name=".Home_Handler"
-            android:exported="false"/>
-        <activity
-            android:name=".SignUp_Handler"
-            android:exported="false"
-            android:parentActivityName=".SignIn_Handler"/>
         <activity
             android:name=".SignIn_Handler"
-            android:exported="true"
-            android:launchMode="singleInstance">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SignUp_Handler"/>
+        <activity
+            android:name=".Home_Handler"/>
+        <activity android:name=".Profile_Handler"/>
+        <activity android:name=".Language_Handler"/>
 
     </application>
 

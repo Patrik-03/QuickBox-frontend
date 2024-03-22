@@ -1,9 +1,13 @@
 package com.example.quickbox_front;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,12 +15,15 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Locale;
+
 public class Profile_Handler extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Home_Handler homeHandler = new Home_Handler();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        loadLocale();
         setContentView(R.layout.profile);
 
         String nameH = getIntent().getStringExtra("name");
@@ -49,9 +56,6 @@ public class Profile_Handler extends AppCompatActivity {
         });
 
         history.setOnClickListener(v -> {
-            Intent intent = new Intent(Profile_Handler.this, History_Handler.class);
-            intent.putExtra("email", emailH);
-            startActivity(intent);
         });
 
         language.setOnClickListener(v -> {
@@ -59,7 +63,21 @@ public class Profile_Handler extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        String language = preferences.getString("My_Lang", "");
+        setLocale(language);
+    }
 
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = locale;
+        res.updateConfiguration(conf, dm);
+    }
     public Bitmap byteArrayToBitmap(byte[] byteArray) {
         if (byteArray == null || byteArray.length == 0) {
             return null;

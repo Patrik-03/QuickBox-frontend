@@ -1,8 +1,12 @@
 package com.example.quickbox_front;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -41,7 +46,9 @@ public class SignUp_Handler extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        loadLocale();
         setContentView(R.layout.signup);
+
         TextView name = findViewById(R.id.name);
         TextView email = findViewById(R.id.email);
         TextView password = findViewById(R.id.passw);
@@ -174,6 +181,21 @@ public class SignUp_Handler extends AppCompatActivity {
             Log.e("QRCode", "Error generating QR code: " + e.getMessage());
             return null;
         }
+    }
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        String language = preferences.getString("My_Lang", "");
+        setLocale(language);
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = locale;
+        res.updateConfiguration(conf, dm);
     }
 
     public byte[] bitmapToByteArray(Bitmap bitmap) {

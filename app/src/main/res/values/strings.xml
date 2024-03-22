@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">QuickBox</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_inT">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="title_activity_home" translatable="false">Home</string>
     <string name="don_t_have_account_yet">Don\'t have account yet?</string>
@@ -31,5 +32,6 @@
     <string name="lightmode">Light Mode</string>
     <string name="english">English</string>
     <string name="slovak">Slovak</string>
+    <string name="currentLang">Current language</string>
 
 </resources>

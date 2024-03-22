@@ -1,7 +1,11 @@
 package com.example.quickbox_front;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -14,6 +18,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,7 +33,9 @@ public class Home_Handler extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        loadLocale();
         setContentView(R.layout.home);
+
         ImageButton profile = findViewById(R.id.profileH);
         ImageButton map = findViewById(R.id.mapH);
         TextView name = findViewById(R.id.nameH);
@@ -88,6 +95,21 @@ public class Home_Handler extends AppCompatActivity {
             intent.putExtra("qr_code", qr_codeR);
             startActivity(intent);
         });
+    }
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        String language = preferences.getString("My_Lang", "");
+        setLocale(language);
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = locale;
+        res.updateConfiguration(conf, dm);
     }
     public void closeWebSocketConnectionHome() {
         if (webSocket != null) {
