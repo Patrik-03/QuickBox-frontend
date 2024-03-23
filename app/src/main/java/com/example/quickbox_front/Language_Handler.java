@@ -33,13 +33,18 @@ public class Language_Handler extends AppCompatActivity {
         Button english = findViewById(R.id.english);
         Button slovak = findViewById(R.id.slovak);
         ProgressBar progressBar = findViewById(R.id.progressBarL);
-        TextView language = findViewById(R.id.currL);
+        TextView languageSK = findViewById(R.id.currLS);
+        TextView languageEN = findViewById(R.id.currLE);
 
-        if(Locale.getDefault().getLanguage().equals("en")) {
-            language.setTranslationY(0.283F);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        if (Locale.getDefault().getLanguage().equals("sk")) {
+            languageSK.setVisibility(View.VISIBLE);
+            languageEN.setVisibility(View.INVISIBLE);
         }
-        else if (Locale.getDefault().getLanguage().equals("sk")) {
-            language.setTranslationY(0.148F);
+        else if (Locale.getDefault().getLanguage().equals("en")) {
+            languageEN.setVisibility(View.VISIBLE);
+            languageSK.setVisibility(View.INVISIBLE);
         }
 
         back.setOnClickListener(v -> {
@@ -52,10 +57,9 @@ public class Language_Handler extends AppCompatActivity {
             }
             else if (Locale.getDefault().getLanguage().equals("sk")) {
                 progressBar.setVisibility(View.VISIBLE);
-                language.setTranslationY(0.283F);
+                languageSK.setVisibility(View.INVISIBLE);
                 setLocale("en");
                 restartApp();
-                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -65,10 +69,9 @@ public class Language_Handler extends AppCompatActivity {
             }
             else if (Locale.getDefault().getLanguage().equals("en")) {
                 progressBar.setVisibility(View.VISIBLE);
-                language.setTranslationY(0.148F);
+                languageEN.setVisibility(View.INVISIBLE);
                 setLocale("sk");
                 restartApp();
-                progressBar.setVisibility(View.INVISIBLE);
             }
         });
     }

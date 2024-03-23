@@ -16,19 +16,11 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.util.EnumMap;
 import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,6 +31,7 @@ import okhttp3.WebSocketListener;
 public class SignUp_Handler extends AppCompatActivity {
     private JSONObject receivedMessage;
     IPServer ipServer = new IPServer();
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,50 +137,24 @@ public class SignUp_Handler extends AppCompatActivity {
                 json.put("city", city.getText().toString());
                 json.put("street", street.getText().toString());
                 json.put("street_number", street_number.getText().toString());
-                json.put("qr_code", bitmapToByteArray(generateQRCode(email.getText().toString())));
                 webSocket.send(json.toString());
-                generateQRCode(email.getText().toString()).recycle();
             } catch (Exception e) {
                 Log.e("WebSocket", "Error: " + e.getMessage());
             }
         });
     }
 
-    private Bitmap generateQRCode(String email) {
-        if (email == null || email.isEmpty()) {
-            Log.e("QRCode", "Error: Email is null or empty");
-            return null;
-        }
-
-        try {
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
-            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-            BitMatrix bitMatrix = qrCodeWriter.encode(email, BarcodeFormat.QR_CODE, 200, 200, hints);
-
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
-                }
-            }
-
-            Log.d("QRCode", "QR code generated:" + bitmap);
-            return bitmap;
-        } catch (WriterException e) {
-            Log.e("QRCode", "Error generating QR code: " + e.getMessage());
-            return null;
-        }
+    private byte[] bitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
+
     public void loadLocale() {
         SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
         String language = preferences.getString("My_Lang", "");
         setLocale(language);
     }
-
     public void setLocale(String lang) {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
@@ -196,11 +163,5 @@ public class SignUp_Handler extends AppCompatActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = locale;
         res.updateConfiguration(conf, dm);
-    }
-
-    public byte[] bitmapToByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
     }
 }

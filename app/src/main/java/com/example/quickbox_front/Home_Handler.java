@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,11 +15,19 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -29,6 +38,7 @@ import okhttp3.WebSocketListener;
 public class Home_Handler extends AppCompatActivity {
     private WebSocket webSocket;
     IPServer ipServer = new IPServer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +50,7 @@ public class Home_Handler extends AppCompatActivity {
         ImageButton map = findViewById(R.id.mapH);
         TextView name = findViewById(R.id.nameH);
         String email = getIntent().getStringExtra("email");
-        String nameR = "";
-        byte[] qr_codeR = new byte[0];
+        Bitmap qr_code = generateQRCode(email);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
 
@@ -74,7 +83,16 @@ public class Home_Handler extends AppCompatActivity {
             @Override
             public void onMessage(WebSocket webSocket, String text) {
                 Log.d("WebSocket", "Received message: " + text);
-
+                try {
+                    JSONObject receivedMessage = new JSONObject(text);
+                    String nameR = receivedMessage.getString("name");
+                    Log.d("WebSocket", "Name: " + nameR);
+                    runOnUiThread(() -> {
+                        name.setText(nameR);
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -90,9 +108,9 @@ public class Home_Handler extends AppCompatActivity {
 
         profile.setOnClickListener(v -> {
             Intent intent = new Intent(Home_Handler.this, Profile_Handler.class);
-            intent.putExtra("name", nameR);
+            intent.putExtra("name", name.getText().toString());
             intent.putExtra("email", email);
-            intent.putExtra("qr_code", qr_codeR);
+            intent.putExtra("qr_code", qr_code);
             startActivity(intent);
         });
     }
@@ -110,6 +128,33 @@ public class Home_Handler extends AppCompatActivity {
         Configuration conf = res.getConfiguration();
         conf.locale = locale;
         res.updateConfiguration(conf, dm);
+    }
+    private Bitmap generateQRCode(String email) {
+        try {
+            String qrCodeData = email;
+            String charset = "UTF-8";
+
+
+            Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
+            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+
+            BitMatrix matrix = new MultiFormatWriter().encode(
+                    new String(qrCodeData.getBytes(charset), charset),
+                    BarcodeFormat.QR_CODE, 200, 200, hintMap);
+
+            int width = matrix.getWidth();
+            int height = matrix.getHeight();
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bitmap.setPixel(x, y, matrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+                }
+            }
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public void closeWebSocketConnectionHome() {
         if (webSocket != null) {
