@@ -79,8 +79,9 @@ public class SignIn_Handler extends AppCompatActivity {
                         Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
                         intent.putExtra("email", email.getText().toString());
                         webSocket.close(1000, "Closing the connection");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Add this line
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
+                        finish(); // Add this line
                     });
                 } else {
                     // If credentials are incorrect, show error message

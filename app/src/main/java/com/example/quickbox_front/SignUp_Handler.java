@@ -86,8 +86,9 @@ public class SignUp_Handler extends AppCompatActivity {
                         intent.putExtra("email", email.getText().toString());
                         signInHandler.closeWebSocketConnection();
                         webSocket.close(1000, "Closing the connection");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        finish();
+                        finish(); // Add this line
                     });
                 } else if (!email.getText().toString().contains("@") || !email.getText().toString().contains(".")
                         || result.equals("ok")) {

@@ -58,6 +58,7 @@ public class Profile_Handler extends AppCompatActivity {
 
         signout.setOnClickListener(v -> {
             Intent intent = new Intent(Profile_Handler.this, SignIn_Handler.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
             homeHandler.finish();

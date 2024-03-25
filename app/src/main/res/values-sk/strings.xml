@@ -29,4 +29,12 @@
     <string name="slovak">Slovenčina</string>
     <string name="sign_inT">Prihlásenie</string>
     <string name="currentLang">Aktuálny jazyk</string>
+    <string name="enter_receivID">Zadajte ID príjemcu</string>
+    <string name="enter_note">"Zadajte poznámku "</string>
+    <string name="economy">Ekonomická</string>
+    <string name="fast">Rýchla</string>
+    <string name="superfast">Super rýchla</string>
+    <string name="delType">Zvoľte typ prepravy</string>
+    <string name="enter_receivIDText">Zadajte ID príjemcu alebo naskenujte QR kód</string>
+    <string name="noteText">Poznámka (voliteľné)</string>
 </resources>

@@ -29,7 +29,7 @@ public class Language_Handler extends AppCompatActivity {
         setContentView(R.layout.language);
         EdgeToEdge.enable(this);
 
-        Button back = findViewById(R.id.backL);
+        Button back = findViewById(R.id.backD);
         Button english = findViewById(R.id.english);
         Button slovak = findViewById(R.id.slovak);
         ProgressBar progressBar = findViewById(R.id.progressBarL);

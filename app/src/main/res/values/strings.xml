@@ -33,5 +33,14 @@
     <string name="english">English</string>
     <string name="slovak">Slovak</string>
     <string name="currentLang">Current language</string>
+    <string name="enter_receivID">Enter receiver ID</string>
+    <string name="enter_note">Enter note</string>
+    <string name="qrScan" translatable="false">QR Scan</string>
+    <string name="economy">Economy</string>
+    <string name="fast">Fast</string>
+    <string name="superfast">Superfast</string>
+    <string name="delType">Choose delivery type</string>
+    <string name="enter_receivIDText">Enter receiver ID or scan QR code</string>
+    <string name="noteText">Note (optional)</string>
 
 </resources>
