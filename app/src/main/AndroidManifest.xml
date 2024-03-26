@@ -28,6 +28,7 @@
             android:name=".Home_Handler"/>
         <activity android:name=".Profile_Handler"/>
         <activity android:name=".Language_Handler"/>
+        <activity android:name=".CreateDel_Handler"/>
 
     </application>
 

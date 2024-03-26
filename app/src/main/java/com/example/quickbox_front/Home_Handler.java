@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class Home_Handler extends AppCompatActivity {
         setContentView(R.layout.home);
 
         ImageButton profile = findViewById(R.id.profileH);
+        Button create = findViewById(R.id.createDel);
         ImageButton map = findViewById(R.id.mapH);
         TextView name = findViewById(R.id.nameH);
         String email = getIntent().getStringExtra("email");
@@ -110,6 +112,13 @@ public class Home_Handler extends AppCompatActivity {
             intent.putExtra("name", name.getText().toString());
             intent.putExtra("email", email);
             intent.putExtra("qr_code", qr_code);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
+
+        create.setOnClickListener(v -> {
+            Intent intent = new Intent(Home_Handler.this, CreateDel_Handler.class);
+            intent.putExtra("email", email);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });

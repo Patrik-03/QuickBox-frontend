@@ -24,6 +24,7 @@
         android:id="@+id/currLS"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
         android:text="@string/currentLang"
         android:textAlignment="center"
@@ -42,6 +43,7 @@
         android:id="@+id/english"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:autoSizeMaxTextSize="32sp"
         android:autoSizeTextType="uniform"
         android:text="@string/english"
         android:textAlignment="center"
@@ -51,12 +53,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currLE"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.6" />
 
     <Button
         android:id="@+id/slovak"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:autoSizeMaxTextSize="32sp"
         android:autoSizeTextType="uniform"
         android:text="@string/slovak"
         android:textAlignment="center"
@@ -66,7 +69,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currLS"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.6" />
 
     <Button
         android:id="@+id/backD"
@@ -84,6 +87,7 @@
         android:id="@+id/currLE"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
         android:text="@string/currentLang"
         android:textAlignment="center"

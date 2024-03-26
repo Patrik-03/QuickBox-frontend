@@ -121,6 +121,7 @@ public class SignIn_Handler extends AppCompatActivity {
 
         signup.setOnClickListener(v -> {
             Intent intent = new Intent(SignIn_Handler.this, SignUp_Handler.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 

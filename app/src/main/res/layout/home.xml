@@ -66,15 +66,16 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/history"
+        app:layout_constraintTop_toBottomOf="@+id/createDel"
         app:layout_constraintWidth_percent="0.9"
         tools:visibility="invisible" />
 
     <Button
-        android:id="@+id/history"
+        android:id="@+id/createDel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="32dp"
+        android:autoSizeMaxTextSize="30sp"
         android:autoSizeTextType="uniform"
         android:text="@string/create_delivery"
         android:textAlignment="center"
@@ -90,6 +91,8 @@
         android:id="@+id/nameH"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:textAlignment="center"
+        android:autoSizeMaxTextSize="24sp"
         android:autoSizeTextType="uniform"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
