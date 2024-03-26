@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,8 +31,6 @@ import okhttp3.WebSocketListener;
 
 public class SignUp_Handler extends AppCompatActivity {
     private JSONObject receivedMessage;
-    IPServer ipServer = new IPServer();
-    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +41,19 @@ public class SignUp_Handler extends AppCompatActivity {
         loadLocale();
         setContentView(R.layout.signup);
 
-        TextView name = findViewById(R.id.name);
-        TextView email = findViewById(R.id.email);
-        TextView password = findViewById(R.id.passw);
-        TextView city = findViewById(R.id.city);
-        TextView street = findViewById(R.id.street);
-        TextView street_number = findViewById(R.id.street_num);
+        EditText name = findViewById(R.id.name);
+        EditText email = findViewById(R.id.email);
+        EditText password = findViewById(R.id.passw);
+        EditText city = findViewById(R.id.city);
+        EditText street = findViewById(R.id.street);
+        EditText street_number = findViewById(R.id.street_num);
         Button back = findViewById(R.id.backB);
         Button create = findViewById(R.id.create);
         ProgressBar progressBar = findViewById(R.id.progressBarUp);
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://" + ipServer.getIp() + ":8000/ws/signup")
+                .url("ws://" + IPServer.IP + ":8000/ws/signup")
                 .build();
 
         WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {

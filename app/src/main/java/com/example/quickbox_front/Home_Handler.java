@@ -37,7 +37,6 @@ import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
     private WebSocket webSocket;
-    IPServer ipServer = new IPServer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +61,7 @@ public class Home_Handler extends AppCompatActivity {
         viewPager.setAdapter(myPagerAdapter);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://" + ipServer.getIp() + ":8000/ws/home")
+                .url("ws://" + IPServer.IP + ":8000/ws/home")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -111,6 +110,7 @@ public class Home_Handler extends AppCompatActivity {
             intent.putExtra("name", name.getText().toString());
             intent.putExtra("email", email);
             intent.putExtra("qr_code", qr_code);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
     }
@@ -156,6 +156,7 @@ public class Home_Handler extends AppCompatActivity {
         }
         return null;
     }
+
     public void closeWebSocketConnectionHome() {
         if (webSocket != null) {
             webSocket.close(1000, "Closing the connection");

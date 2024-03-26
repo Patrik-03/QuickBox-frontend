@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,7 +30,6 @@ import okhttp3.WebSocketListener;
 
 public class SignIn_Handler extends AppCompatActivity {
     private JSONObject receivedMessage;
-    IPServer ipServer = new IPServer();
 
     private WebSocket webSocket;
     @Override
@@ -39,8 +39,8 @@ public class SignIn_Handler extends AppCompatActivity {
         loadLocale();
         setContentView(R.layout.signin);
 
-        TextView email = findViewById(R.id.editTextTextEmailAddress);
-        TextView password = findViewById(R.id.editTextTextPassword);
+        EditText email = findViewById(R.id.editTextTextEmailAddress);
+        EditText password = findViewById(R.id.editTextTextPassword);
         ProgressBar progressBar = findViewById(R.id.progressBarUp);
         Button signin = findViewById(R.id.signinB);
         TextView textcreate = findViewById(R.id.createacc);
@@ -50,7 +50,7 @@ public class SignIn_Handler extends AppCompatActivity {
         // Connect to WebSocket server
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("ws://" + ipServer.getIp() + ":8000/ws/signin")
+                .url("ws://" + IPServer.IP + ":8000/ws/signin")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {

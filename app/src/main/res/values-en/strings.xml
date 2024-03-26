@@ -33,6 +33,7 @@
     <string name="enter_note">Enter note</string>
     <string name="economy">Economy</string>
     <string name="fast">Fast</string>
+    <string name="standard">Standard</string>
     <string name="superfast">Superfast</string>
     <string name="delType">Choose delivery type</string>
     <string name="enter_receivIDText">Enter receiver ID or scan QR code</string>

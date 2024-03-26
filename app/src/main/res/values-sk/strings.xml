@@ -33,6 +33,7 @@
     <string name="enter_note">"Zadajte poznámku "</string>
     <string name="economy">Ekonomická</string>
     <string name="fast">Rýchla</string>
+    <string name="standard">Štandardná</string>
     <string name="superfast">Super rýchla</string>
     <string name="delType">Zvoľte typ prepravy</string>
     <string name="enter_receivIDText">Zadajte ID príjemcu alebo naskenujte QR kód</string>
