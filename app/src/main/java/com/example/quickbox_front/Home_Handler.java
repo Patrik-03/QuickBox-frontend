@@ -50,8 +50,9 @@ public class Home_Handler extends AppCompatActivity {
         Button create = findViewById(R.id.createDel);
         ImageButton map = findViewById(R.id.mapH);
         TextView name = findViewById(R.id.nameH);
+        String idGet = getIntent().getStringExtra("id");
         String email = getIntent().getStringExtra("email");
-        Bitmap qr_code = generateQRCode(email);
+        Bitmap qr_code = generateQRCode(idGet);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
 

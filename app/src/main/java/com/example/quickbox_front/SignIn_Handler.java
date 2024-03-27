@@ -64,20 +64,23 @@ public class SignIn_Handler extends AppCompatActivity {
             @Override
             public void onMessage(WebSocket webSocket, String text) {
                 Log.d("WebSocket", "Received message: " + text);
-                String result;
+                String resultID;
+                String resultEmail;
                 try {
                     receivedMessage = new JSONObject(text);
-                    result = receivedMessage.getString("result");
+                    resultID = receivedMessage.getString("id");
+                    resultEmail = receivedMessage.getString("email");
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
                 // Check received message
-                if (result.equals("True")) {
+                if (!resultID.isEmpty()) {
                     // If credentials are correct, start Home_Handler activity
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
-                        intent.putExtra("email", email.getText().toString());
+                        intent.putExtra("id", resultID);
+                        intent.putExtra("email", resultEmail);
                         webSocket.close(1000, "Closing the connection");
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
