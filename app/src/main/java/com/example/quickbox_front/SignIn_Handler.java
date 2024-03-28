@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
@@ -36,6 +37,16 @@ public class SignIn_Handler extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        boolean isUserLoggedIn = sharedPreferences.getBoolean("isUserLoggedIn", false);
+
+        if (isUserLoggedIn) {
+            // If user is already logged in, start Home_Handler activity
+            Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         loadLocale();
         setContentView(R.layout.signin);
 
@@ -74,15 +85,18 @@ public class SignIn_Handler extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
                 // Check received message
-                if (!resultID.isEmpty()) {
+                if (!resultID.isEmpty() && resultEmail.equals(email.getText().toString())) {
                     // If credentials are correct, start Home_Handler activity
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
-                        intent.putExtra("id", resultID);
-                        intent.putExtra("email", resultEmail);
                         webSocket.close(1000, "Closing the connection");
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("isUserLoggedIn", true);
+                        editor.putString("id", resultID);
+                        editor.putString("email", resultEmail);
+                        editor.apply();
                         startActivity(intent);
                         finish(); // Add this line
                     });
@@ -124,9 +138,9 @@ public class SignIn_Handler extends AppCompatActivity {
 
         signup.setOnClickListener(v -> {
             Intent intent = new Intent(SignIn_Handler.this, SignUp_Handler.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         });
+
 
         signin.setOnClickListener(v -> {
             signin.setVisibility(View.GONE);
@@ -143,6 +157,16 @@ public class SignIn_Handler extends AppCompatActivity {
             // Send credentials to server
             webSocket.send(jsonObject.toString());
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                webSocket.close(1000, "Closing the connection");
+                finish();
+            }
+        }
     }
     public void loadLocale() {
         SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);

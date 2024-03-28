@@ -28,7 +28,6 @@ import java.util.Locale;
 public class Profile_Handler extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Home_Handler homeHandler = new Home_Handler();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         loadLocale();
@@ -57,12 +56,17 @@ public class Profile_Handler extends AppCompatActivity {
         });
 
         signout.setOnClickListener(v -> {
+            Intent returnIntent = new Intent();
+            setResult(RESULT_OK, returnIntent);
+            SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isUserLoggedIn", false);
+            editor.apply();
+            finish();
             Intent intent = new Intent(Profile_Handler.this, SignIn_Handler.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-            homeHandler.finish();
-            homeHandler.closeWebSocketConnectionHome();
         });
 
         history.setOnClickListener(v -> {

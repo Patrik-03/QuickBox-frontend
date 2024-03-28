@@ -34,7 +34,7 @@ public class SignUp_Handler extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SignIn_Handler signInHandler = new SignIn_Handler();
+        SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -67,30 +67,40 @@ public class SignUp_Handler extends AppCompatActivity {
             @Override
             public void onMessage(WebSocket webSocket, String text) {
                 Log.d("WebSocket", "Received message: " + text);
-                String result;
+
+                String resultId;
+                String resultEmail;
                 try {
                     receivedMessage = new JSONObject(text);
-                    result = receivedMessage.getString("result");
+                    resultId = receivedMessage.getString("id");
+                    resultEmail = receivedMessage.getString("email");
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
 
                 // Check received message
-                if (result.equals("ok") && email.getText().toString().contains("@") && email.getText().toString().contains(".")){
+                if (!resultId.isEmpty() && email.getText().toString().contains("@") && email.getText().toString().contains(".")
+                        && resultEmail.equals(email.getText().toString())) {
                     // If credentials are correct, start Home_Handler activity
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
-                        signInHandler.finish();
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_OK, returnIntent);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("isUserLoggedIn", true);
+                        editor.putString("id", resultId);
+                        editor.putString("email", resultEmail);
+                        editor.apply();
+                        finish();
                         Intent intent = new Intent(SignUp_Handler.this, Home_Handler.class);
-                        intent.putExtra("email", email.getText().toString());
-                        signInHandler.closeWebSocketConnection();
+                        intent.putExtra("id", resultId);
+                        intent.putExtra("email", resultEmail);
                         webSocket.close(1000, "Closing the connection");
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        finish(); // Add this line
                     });
-                } else if (!email.getText().toString().contains("@") || !email.getText().toString().contains(".")
-                        || result.equals("ok")) {
+                } else if ((!email.getText().toString().contains("@") || !email.getText().toString().contains("."))
+                        && !resultId.isEmpty() && resultEmail.equals(email.getText().toString())) {
                     progressBar.setVisibility(View.GONE);
                     create.setVisibility(View.VISIBLE);
                     email.setError(getString(R.string.wrongfromat));

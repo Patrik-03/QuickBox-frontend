@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
@@ -38,6 +39,7 @@ import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
     private WebSocket webSocket;
+    Boolean openConnection = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,11 @@ public class Home_Handler extends AppCompatActivity {
         Button create = findViewById(R.id.createDel);
         ImageButton map = findViewById(R.id.mapH);
         TextView name = findViewById(R.id.nameH);
-        String idGet = getIntent().getStringExtra("id");
-        String email = getIntent().getStringExtra("email");
+
+        SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        String email = sharedPreferences.getString("email", "");
+        String idGet = sharedPreferences.getString("id", "");
+
         Bitmap qr_code = generateQRCode(idGet);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
@@ -62,51 +67,53 @@ public class Home_Handler extends AppCompatActivity {
         images.add(R.drawable.map);
         MyPagerAdapter myPagerAdapter = new MyPagerAdapter(this, images);
         viewPager.setAdapter(myPagerAdapter);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("ws://" + IPServer.IP + ":8000/ws/home")
-                .build();
+        if (!openConnection) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("ws://" + IPServer.IP + ":8000/ws/home")
+                    .build();
 
-        webSocket = client.newWebSocket(request, new WebSocketListener() {
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                // WebSocket connection established
-                super.onOpen(webSocket, response);
-                Log.d("WebSocket", "Connection established (Home)");
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("email", email);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            webSocket = client.newWebSocket(request, new WebSocketListener() {
+                @Override
+                public void onOpen(WebSocket webSocket, Response response) {
+                    // WebSocket connection established
+                    super.onOpen(webSocket, response);
+                    Log.d("WebSocket", "Connection established (Home)");
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("id", idGet);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    webSocket.send(jsonObject.toString());
                 }
-                webSocket.send(jsonObject.toString());
-            }
 
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                Log.d("WebSocket", "Received message: " + text);
-                try {
-                    JSONObject receivedMessage = new JSONObject(text);
-                    String nameR = receivedMessage.getString("name");
-                    Log.d("WebSocket", "Name: " + nameR);
-                    runOnUiThread(() -> {
-                        name.setText(nameR);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
+                @Override
+                public void onMessage(WebSocket webSocket, String text) {
+                    Log.d("WebSocket", "Received message: " + text);
+                    try {
+                        JSONObject receivedMessage = new JSONObject(text);
+                        String nameR = receivedMessage.getString("name");
+                        Log.d("WebSocket", "Name: " + nameR);
+                        runOnUiThread(() -> {
+                            name.setText(nameR);
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                Log.d("WebSocket", "Connection closed (Home)");
-            }
+                @Override
+                public void onClosed(WebSocket webSocket, int code, String reason) {
+                    Log.d("WebSocket", "Connection closed (Home)");
+                }
 
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                Log.e("WebSocket", "Connection failed: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                    Log.e("WebSocket", "Connection failed: " + t.getMessage());
+                }
+            });
+        }
 
         profile.setOnClickListener(v -> {
             Intent intent = new Intent(Home_Handler.this, Profile_Handler.class);
@@ -114,7 +121,7 @@ public class Home_Handler extends AppCompatActivity {
             intent.putExtra("email", email);
             intent.putExtra("qr_code", qr_code);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         });
 
         create.setOnClickListener(v -> {
@@ -123,6 +130,16 @@ public class Home_Handler extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                webSocket.close(1000, "Closing the connection");
+                finish();
+            }
+        }
     }
     public void loadLocale() {
         SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
