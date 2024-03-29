@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -17,13 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
 public class Language_Handler extends AppCompatActivity {
-    Home_Handler homeHandler;
-    Profile_Handler profileHandler;
+    Home_Handler homeHandler = new Home_Handler();
+    Profile_Handler profileHandler = new Profile_Handler();
+    String idH;
+    String emailH;
+    Bitmap qr_codeH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        homeHandler = new Home_Handler();
-        profileHandler = new Profile_Handler();
         super.onCreate(savedInstanceState);
         loadLocale();
         setContentView(R.layout.language);
@@ -36,40 +37,33 @@ public class Language_Handler extends AppCompatActivity {
         TextView languageSK = findViewById(R.id.currLS);
         TextView languageEN = findViewById(R.id.currLE);
 
+        idH = getIntent().getStringExtra("id");
+        emailH = getIntent().getStringExtra("email");
+        qr_codeH = getIntent().getParcelableExtra("qr_code");
+
         progressBar.setVisibility(View.INVISIBLE);
 
         if (Locale.getDefault().getLanguage().equals("sk")) {
             languageSK.setVisibility(View.VISIBLE);
             languageEN.setVisibility(View.INVISIBLE);
-        }
-        else if (Locale.getDefault().getLanguage().equals("en")) {
+        } else if (Locale.getDefault().getLanguage().equals("en")) {
             languageEN.setVisibility(View.VISIBLE);
             languageSK.setVisibility(View.INVISIBLE);
         }
 
-        back.setOnClickListener(v -> {
-            finish();
-        });
+        back.setOnClickListener(v -> finish());
 
         english.setOnClickListener(v -> {
-            if (Locale.getDefault().getLanguage().equals("en")) {
-                return;
-            }
-            else if (Locale.getDefault().getLanguage().equals("sk")) {
+            if (!Locale.getDefault().getLanguage().equals("en")) {
                 progressBar.setVisibility(View.VISIBLE);
-                languageSK.setVisibility(View.INVISIBLE);
                 setLocale("en");
                 restartApp();
             }
         });
 
         slovak.setOnClickListener(v -> {
-            if (Locale.getDefault().getLanguage().equals("sk")) {
-                return;
-            }
-            else if (Locale.getDefault().getLanguage().equals("en")) {
+            if (!Locale.getDefault().getLanguage().equals("sk")) {
                 progressBar.setVisibility(View.VISIBLE);
-                languageEN.setVisibility(View.INVISIBLE);
                 setLocale("sk");
                 restartApp();
             }
@@ -80,10 +74,9 @@ public class Language_Handler extends AppCompatActivity {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
-        conf.locale = locale;
-        res.updateConfiguration(conf, dm);
+        conf.setLocale(locale);
+        res.updateConfiguration(conf, res.getDisplayMetrics());
 
         // Save the selected language
         SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
@@ -95,8 +88,11 @@ public class Language_Handler extends AppCompatActivity {
     public void loadLocale() {
         SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
         String language = preferences.getString("My_Lang", "");
-        setLocale(language);
+        if (!language.isEmpty()) {
+            setLocale(language);
+        }
     }
+
     private void restartApp() {
         finish();
         homeHandler.finish();
@@ -106,6 +102,9 @@ public class Language_Handler extends AppCompatActivity {
         startActivity(intentH);
         Intent intentP = new Intent(getApplicationContext(), Profile_Handler.class);
         intentP.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intentP.putExtra("id", idH);
+        intentP.putExtra("email", emailH);
+        intentP.putExtra("qr_code", qr_codeH);
         startActivity(intentP);
         Intent intent = new Intent(getApplicationContext(), Language_Handler.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

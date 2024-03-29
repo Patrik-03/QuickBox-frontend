@@ -19,7 +19,7 @@
     <string name="logo" translatable="false">logo\n</string>
     <string name="map" translatable="false">map</string>
     <string name="avatar" translatable="false">avatar</string>
-    <string name="create_delivery">Create delivery</string>
+    <string name="create_delivery">Send package</string>
     <string name="errorsignin">Email or password is incorrect</string>
     <string name="emailenter">Email is required</string>
     <string name="wrongfromat">Missing @ or .</string>
@@ -40,7 +40,10 @@
     <string name="fast">Fast</string>
     <string name="standard">Standard</string>
     <string name="delType">Choose delivery type</string>
-    <string name="enter_receivIDText">Enter receiver ID or scan QR code</string>
+    <string name="enter_receivIDText">Enter ID or scan QR code</string>
     <string name="noteText">Note (optional)</string>
+    <string name="invalid">Invalid receivers ID</string>
+    <string name="fields">Please fill all the fields</string>
+    <string name="welcome">Welcome back, </string>
 
 </resources>

@@ -55,7 +55,6 @@
         android:id="@+id/signout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="152dp"
         android:autoSizeMaxTextSize="32sp"
         android:autoSizeTextType="uniform"
         android:text="@string/signout"
@@ -66,7 +65,7 @@
         app:layout_constraintHorizontal_bias="0.652"
         app:layout_constraintStart_toEndOf="@+id/qr_code"
         app:layout_constraintTop_toBottomOf="@+id/language"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.697"
         app:layout_constraintWidth_percent="0.3"
         tools:ignore="VisualLintButtonSize" />
 

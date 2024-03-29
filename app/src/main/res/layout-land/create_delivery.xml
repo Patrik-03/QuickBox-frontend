@@ -5,6 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBarUp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.835"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view3"
+        app:layout_constraintVertical_bias="0.915"
+        tools:visibility="visible" />
+
     <View
         android:id="@+id/view2"
         android:layout_width="0dp"
@@ -55,21 +70,23 @@
         app:layout_constraintVertical_bias="0.041"
         app:layout_constraintWidth_percent="0.35" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <ImageButton
         android:id="@+id/qrScan"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:backgroundTint="#00FFFFFF"
         android:clickable="true"
         android:contentDescription="@string/qrScan"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="@+id/view2"
-        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHeight_percent="0.15"
         app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toEndOf="@+id/receivID"
         app:layout_constraintTop_toBottomOf="@+id/textID"
         app:layout_constraintVertical_bias="0.4"
-        app:layout_constraintWidth_percent="0.06"
-        app:srcCompat="@drawable/avatar" />
+        app:layout_constraintWidth_percent="0.08"
+        app:srcCompat="@drawable/qr_code" />
 
     <View
         android:id="@+id/view3"

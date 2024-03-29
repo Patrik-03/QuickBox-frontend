@@ -1,5 +1,6 @@
 package com.example.quickbox_front;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -23,6 +24,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,7 +42,9 @@ import okhttp3.WebSocketListener;
 public class Home_Handler extends AppCompatActivity {
     private WebSocket webSocket;
     Boolean openConnection = false;
+    Boolean nameSet = false;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,11 +66,7 @@ public class Home_Handler extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.viewPager);
 
         List<Integer> images = new ArrayList<>();
-        images.add(R.drawable.map);
-        images.add(R.drawable.map);
-        images.add(R.drawable.map);
-        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(this, images);
-        viewPager.setAdapter(myPagerAdapter);
+
         if (!openConnection) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -82,6 +82,7 @@ public class Home_Handler extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject();
                     try {
                         jsonObject.put("id", idGet);
+                        jsonObject.put("del_id", 0);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -91,15 +92,50 @@ public class Home_Handler extends AppCompatActivity {
                 @Override
                 public void onMessage(WebSocket webSocket, String text) {
                     Log.d("WebSocket", "Received message: " + text);
-                    try {
-                        JSONObject receivedMessage = new JSONObject(text);
-                        String nameR = receivedMessage.getString("name");
-                        Log.d("WebSocket", "Name: " + nameR);
-                        runOnUiThread(() -> {
-                            name.setText(nameR);
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (!nameSet) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(text);
+                            String nameGet = jsonObject.getString("name");
+                            name.setText(getString(R.string.welcome) + nameGet);
+                            nameSet = true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            // Parse the JSON string into a JSONObject
+                            JSONObject jsonObject = new JSONObject(text);
+
+                            // Get the "items" JSONArray from the JSONObject
+                            JSONArray jsonArray = jsonObject.getJSONArray("items");
+
+                            // Clear the images list
+                            images.clear();
+
+                            // Iterate over the array
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                // Get each delivery as a JSONObject
+                                JSONObject delivery = jsonArray.getJSONObject(i);
+
+                                // Extract data from the JSONObject
+                                String id = delivery.getString("id");
+                                String from = delivery.getString("from");
+                                String delivery_time = delivery.getString("delivery_time");
+                                String status = delivery.getString("status");
+
+                                // Add the image to the images list
+                                images.add(R.drawable.logo);
+                            }
+
+                            // Update the UI on the main thread
+                            runOnUiThread(() -> {
+                                MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, images);
+                                viewPager.setAdapter(myPagerAdapter);
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -117,7 +153,7 @@ public class Home_Handler extends AppCompatActivity {
 
         profile.setOnClickListener(v -> {
             Intent intent = new Intent(Home_Handler.this, Profile_Handler.class);
-            intent.putExtra("name", name.getText().toString());
+            intent.putExtra("id", idGet);
             intent.putExtra("email", email);
             intent.putExtra("qr_code", qr_code);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -167,7 +203,7 @@ public class Home_Handler extends AppCompatActivity {
 
             BitMatrix matrix = new MultiFormatWriter().encode(
                     new String(qrCodeData.getBytes(charset), charset),
-                    BarcodeFormat.QR_CODE, 200, 200, hintMap);
+                    BarcodeFormat.QR_CODE, 350, 350, hintMap);
 
             int width = matrix.getWidth();
             int height = matrix.getHeight();

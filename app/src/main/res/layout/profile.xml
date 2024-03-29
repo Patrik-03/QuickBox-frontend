@@ -73,13 +73,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="36dp"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.36"
+        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/language"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.65" />
 
     <TextView
         android:id="@+id/nameP"

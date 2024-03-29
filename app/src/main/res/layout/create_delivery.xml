@@ -3,7 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#00FFFFFF">
+
+    <ProgressBar
+        android:id="@+id/progressBarUp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view4"
+        app:layout_constraintVertical_bias="0.785"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/view2"
@@ -57,8 +72,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.07"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/note"
-        app:layout_constraintVertical_bias="0.345"
+        app:layout_constraintTop_toBottomOf="@+id/view4"
+        app:layout_constraintVertical_bias="0.287"
         app:layout_constraintWidth_percent="0.8"
         tools:ignore="VisualLintButtonSize" />
 
@@ -79,27 +94,29 @@
         android:id="@+id/receivID"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:autoSizeMaxTextSize="18sp"
+        android:autoSizeTextType="uniform"
         android:ems="10"
         android:hint="@string/enter_receivID"
         android:importantForAutofill="no"
         android:inputType="number"
-        android:autoSizeMaxTextSize="18sp"
-        android:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="@+id/view2"
         app:layout_constraintHeight_percent="0.065"
-        app:layout_constraintHorizontal_bias="0.161"
+        app:layout_constraintHorizontal_bias="0.17"
         app:layout_constraintStart_toStartOf="@+id/view2"
         app:layout_constraintTop_toBottomOf="@+id/textID"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintWidth_percent="0.6" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <ImageButton
         android:id="@+id/qrScan"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:backgroundTint="#00FFFFFF"
         android:clickable="true"
         android:contentDescription="@string/qrScan"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="@+id/view2"
         app:layout_constraintHeight_percent="0.065"
@@ -108,7 +125,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textID"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintWidth_percent="0.14"
-        app:srcCompat="@drawable/avatar" />
+        app:srcCompat="@drawable/qr_code" />
 
     <EditText
         android:id="@+id/note"
@@ -120,47 +137,47 @@
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/enter_note"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="@+id/view4"
         app:layout_constraintEnd_toEndOf="@+id/view4"
         app:layout_constraintHeight_percent="0.23"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/view4"
         app:layout_constraintTop_toBottomOf="@+id/textNote"
-        app:layout_constraintVertical_bias="0.333"
-        app:layout_constraintWidth_percent="0.8"
-        android:importantForAutofill="no" />
+        app:layout_constraintVertical_bias="0.421"
+        app:layout_constraintWidth_percent="0.8" />
 
     <TextView
         android:id="@+id/delType"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
         android:text="@string/delType"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.04"
-        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/view3"
         app:layout_constraintTop_toTopOf="@+id/view3"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.8" />
 
     <CheckBox
         android:id="@+id/economy"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:autoSizeMaxTextSize="18sp"
         android:autoSizeTextType="uniform"
         android:text="@string/economy"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.055"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="@+id/view3"
         app:layout_constraintTop_toBottomOf="@+id/delType"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.4" />
 
     <CheckBox
         android:id="@+id/standard"
@@ -172,10 +189,10 @@
         android:text="@string/standard"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.055"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="@+id/view3"
         app:layout_constraintTop_toBottomOf="@+id/economy"
-        app:layout_constraintWidth_percent="0.29" />
+        app:layout_constraintWidth_percent="0.4" />
 
     <CheckBox
         android:id="@+id/fast"
@@ -187,10 +204,10 @@
         android:text="@string/fast"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.055"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="@+id/view3"
         app:layout_constraintTop_toBottomOf="@+id/standard"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.4" />
 
     <TextView
         android:id="@+id/textNote"
@@ -203,10 +220,10 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/view4"
         app:layout_constraintHeight_percent="0.04"
-        app:layout_constraintHorizontal_bias="0.088"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/view4"
         app:layout_constraintTop_toTopOf="@+id/view4"
-        app:layout_constraintWidth_percent="0.35" />
+        app:layout_constraintWidth_percent="0.8" />
 
     <TextView
         android:id="@+id/textID"
@@ -219,7 +236,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="@+id/view2"
         app:layout_constraintHeight_percent="0.04"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/view2"
         app:layout_constraintTop_toTopOf="@+id/view2"
         app:layout_constraintVertical_bias="0.191"
