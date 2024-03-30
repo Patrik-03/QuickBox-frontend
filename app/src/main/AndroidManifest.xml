@@ -22,22 +22,31 @@
         >
         <activity
             android:name=".SignIn_Handler"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUp_Handler"/>
+            android:name=".SignUp_Handler"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name=".Home_Handler"/>
-        <activity android:name=".Profile_Handler"/>
-        <activity android:name=".Language_Handler"/>
-        <activity android:name=".CreateDel_Handler"/>
+            android:name=".Home_Handler"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Profile_Handler"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Language_Handler"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CreateDel_Handler"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".History_Handler"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="barcode_ui"/>
+            android:value="barcode_ui"
+            android:screenOrientation="portrait"/>
 
     </application>
 

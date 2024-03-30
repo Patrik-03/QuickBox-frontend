@@ -66,6 +66,11 @@ public class Home_Handler extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.viewPager);
 
         List<Integer> images = new ArrayList<>();
+        if (sharedPreferences.getString("name", "").equals("")) {
+            name.setText(getString(R.string.welcome) + email);
+        } else {
+            name.setText(getString(R.string.welcome) + sharedPreferences.getString("name", ""));
+        }
 
         if (!openConnection) {
             OkHttpClient client = new OkHttpClient();
@@ -96,6 +101,7 @@ public class Home_Handler extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(text);
                             String nameGet = jsonObject.getString("name");
+                            sharedPreferences.edit().putString("name", nameGet).apply();
                             name.setText(getString(R.string.welcome) + nameGet);
                             nameSet = true;
                         } catch (Exception e) {
