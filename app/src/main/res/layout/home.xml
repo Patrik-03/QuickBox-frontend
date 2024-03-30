@@ -17,11 +17,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.3"
-        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPager"
-        app:layout_constraintVertical_bias="0.472"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintVertical_bias="0.441"
+        app:layout_constraintWidth_percent="0.85" />
 
     <ImageView
         android:id="@+id/logo"
@@ -34,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         motion:srcCompat="@drawable/quickbox_logo"
-        app:layout_constraintHeight_percent="0.28"
+        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintWidth_percent="1"/>
 
     <ImageButton
@@ -52,7 +51,7 @@
         app:layout_constraintHorizontal_bias="0.811"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.049"
+        app:layout_constraintVertical_bias="0.072"
         app:layout_constraintWidth_percent="0.20"
         tools:srcCompat="@tools:sample/avatars"
         tools:visibility="visible" />
@@ -74,17 +73,16 @@
         android:id="@+id/createDel"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:autoSizeMaxTextSize="30sp"
         android:autoSizeTextType="uniform"
         android:text="@string/create_delivery"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.07"
-        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintWidth_percent="0.85"
         tools:ignore="VisualLintButtonSize" />
 
     <TextView

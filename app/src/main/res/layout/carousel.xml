@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageButton
-        android:id="@+id/image1"
+        android:id="@+id/delivery"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/round_corners"
@@ -16,5 +16,76 @@
         app:layout_constraintHeight_percent="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="1" />
+        app:layout_constraintWidth_percent="0.95" />
+
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeTextType="uniform"
+        android:text="@string/delete"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="@+id/delivery"
+        app:layout_constraintEnd_toEndOf="@+id/delivery"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="@+id/delivery"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTime"
+        app:layout_constraintVertical_bias="0.108"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <TextView
+        android:id="@+id/textViewID"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeTextType="uniform"
+        android:text="@string/delete"
+        android:textAlignment="viewStart"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/delivery"
+        app:layout_constraintEnd_toEndOf="@+id/delivery"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHorizontal_bias="0.173"
+        app:layout_constraintStart_toStartOf="@+id/delivery"
+        app:layout_constraintTop_toTopOf="@+id/delivery"
+        app:layout_constraintVertical_bias="0.107"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/textViewTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeTextType="uniform"
+        android:text="@string/delete"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="@+id/delivery"
+        app:layout_constraintEnd_toEndOf="@+id/delivery"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="@+id/delivery"
+        app:layout_constraintTop_toBottomOf="@+id/textViewID"
+        app:layout_constraintVertical_bias="0.07"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:progressTint="@color/orange"
+        app:layout_constraintBottom_toBottomOf="@+id/delivery"
+        app:layout_constraintEnd_toEndOf="@+id/delivery"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="@+id/delivery"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStatus"
+        app:layout_constraintVertical_bias="0.437"
+        app:layout_constraintWidth_percent="0.805" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

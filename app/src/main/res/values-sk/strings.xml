@@ -40,4 +40,7 @@
     <string name="invalid">Nesprávne ID príjemcu</string>
     <string name="fields">Vyplňte všteky polia prosím</string>
     <string name="welcome">"Vitajte späť, "</string>
+    <string name="changeLang">Zmeňte jazyk</string>
+    <string name="delivery_history">História zásielok</string>
+    <string name="delete">Vymazať</string>
 </resources>

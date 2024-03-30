@@ -45,5 +45,9 @@
     <string name="invalid">Invalid receivers ID</string>
     <string name="fields">Please fill all the fields</string>
     <string name="welcome">Welcome back, </string>
+    <string name="qrcode" translatable="false">QRcode</string>
+    <string name="changeLang">Change language</string>
+    <string name="delivery_history">Delivery history</string>
+    <string name="delete">Delete</string>
 
 </resources>

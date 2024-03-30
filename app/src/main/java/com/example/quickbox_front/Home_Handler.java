@@ -58,6 +58,8 @@ public class Home_Handler extends AppCompatActivity {
         TextView name = findViewById(R.id.nameH);
 
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesDeliveries = getSharedPreferences("Deliveries", MODE_PRIVATE);
+
         String email = sharedPreferences.getString("email", "");
         String idGet = sharedPreferences.getString("id", "");
 
@@ -65,11 +67,33 @@ public class Home_Handler extends AppCompatActivity {
 
         ViewPager viewPager = findViewById(R.id.viewPager);
 
-        List<Integer> images = new ArrayList<>();
-        if (sharedPreferences.getString("name", "").equals("")) {
+        List<CarouselItem> items = new ArrayList<>();
+        if (sharedPreferences.getString("name", "").isEmpty()) {
             name.setText(getString(R.string.welcome) + email);
         } else {
             name.setText(getString(R.string.welcome) + sharedPreferences.getString("name", ""));
+        }
+        if (sharedPreferencesDeliveries.getAll().isEmpty()) {
+            Log.d("WebSocket", "No deliveries");
+            items.add(new CarouselItem("0", "No deliveries", ""));
+        } else {
+            Log.d("WebSocket", "Retrieving data from SharedPreferences");
+            for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
+                try {
+                    JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
+                    String id = jsonObject.getString("id");
+                    String delivery_time = jsonObject.getString("delivery_time");
+                    String status = jsonObject.getString("status");
+                    items.add(new CarouselItem(id, delivery_time, status));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            Log.d("WebSocket", items.toString());
+            runOnUiThread(() -> {
+                MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, items);
+                viewPager.setAdapter(myPagerAdapter);
+            });
         }
 
         if (!openConnection) {
@@ -117,26 +141,39 @@ public class Home_Handler extends AppCompatActivity {
                             JSONArray jsonArray = jsonObject.getJSONArray("items");
 
                             // Clear the images list
-                            images.clear();
-
+                            items.clear();
+                            sharedPreferencesDeliveries.edit().clear().apply();
                             // Iterate over the array
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                // Get each delivery as a JSONObject
                                 JSONObject delivery = jsonArray.getJSONObject(i);
 
-                                // Extract data from the JSONObject
                                 String id = delivery.getString("id");
-                                String from = delivery.getString("from");
                                 String delivery_time = delivery.getString("delivery_time");
                                 String status = delivery.getString("status");
 
                                 // Add the image to the images list
-                                images.add(R.drawable.logo);
+                                items.add(new CarouselItem(id, delivery_time, status));
+                                // Save the delivery ID to SharedPreferences
+                                JSONObject jsonObject1 = new JSONObject();
+                                jsonObject1.put("id", id);
+                                jsonObject1.put("delivery_time", delivery_time);
+                                jsonObject1.put("status", status);
+                                boolean success = sharedPreferencesDeliveries.edit()
+                                        .putString("idHome" + i, String.valueOf(jsonObject1))
+                                        .commit();  // Use commit() instead of apply()
+
+                                if (!success) {
+                                    Log.e("WebSocket", "Failed to save data to SharedPreferences");
+                                }
+                                else {
+                                    Log.d("WebSocket", "Saved data to SharedPreferences");
+                                    Log.d("WebSocket", sharedPreferencesDeliveries.getAll().toString());
+                                }
                             }
 
                             // Update the UI on the main thread
                             runOnUiThread(() -> {
-                                MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, images);
+                                MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, items);
                                 viewPager.setAdapter(myPagerAdapter);
                             });
                         } catch (Exception e) {
