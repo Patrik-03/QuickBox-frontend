@@ -48,6 +48,7 @@ dependencies {
     implementation("com.google.zxing:core:3.3.2")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.zxing.BarcodeFormat;
@@ -41,10 +42,12 @@ import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
     private WebSocket webSocket;
+    private SwipeRefreshLayout swipeRefreshLayout;
     Boolean openConnection = false;
     Boolean nameSet = false;
+    String idGet;
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,34 +60,56 @@ public class Home_Handler extends AppCompatActivity {
         ImageButton map = findViewById(R.id.mapH);
         TextView name = findViewById(R.id.nameH);
 
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
         SharedPreferences sharedPreferencesDeliveries = getSharedPreferences("Deliveries", MODE_PRIVATE);
 
         String email = sharedPreferences.getString("email", "");
-        String idGet = sharedPreferences.getString("id", "");
+        idGet = sharedPreferences.getString("id", "");
 
         Bitmap qr_code = generateQRCode(idGet);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Not used in this case
+            }
+            @Override
+            public void onPageSelected(int position) {
+                // Not used in this case
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    swipeRefreshLayout.setEnabled(false); // Disable swipe refresh during dragging
+                } else if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    swipeRefreshLayout.setEnabled(true);  // Re-enable swipe refresh when idle
+                }
+            }
+        });
+
 
         List<CarouselItem> items = new ArrayList<>();
+
         if (sharedPreferences.getString("name", "").isEmpty()) {
             name.setText(getString(R.string.welcome) + email);
         } else {
             name.setText(getString(R.string.welcome) + sharedPreferences.getString("name", ""));
         }
         if (sharedPreferencesDeliveries.getAll().isEmpty()) {
-            Log.d("WebSocket", "No deliveries");
-            items.add(new CarouselItem("0", "No deliveries", ""));
+            items.add(new CarouselItem(0, 0, "No delivery", "No delivery"));
         } else {
-            Log.d("WebSocket", "Retrieving data from SharedPreferences");
             for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
                 try {
                     JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
-                    String id = jsonObject.getString("id");
+                    Integer id = jsonObject.getInt("id");
+                    Integer user_id = Integer.valueOf(idGet);
                     String delivery_time = jsonObject.getString("delivery_time");
                     String status = jsonObject.getString("status");
-                    items.add(new CarouselItem(id, delivery_time, status));
+                    items.add(new CarouselItem(id, user_id, delivery_time, status));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -95,6 +120,7 @@ public class Home_Handler extends AppCompatActivity {
                 viewPager.setAdapter(myPagerAdapter);
             });
         }
+
 
         if (!openConnection) {
             OkHttpClient client = new OkHttpClient();
@@ -143,33 +169,41 @@ public class Home_Handler extends AppCompatActivity {
                             // Clear the images list
                             items.clear();
                             sharedPreferencesDeliveries.edit().clear().apply();
-                            // Iterate over the array
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject delivery = jsonArray.getJSONObject(i);
 
-                                String id = delivery.getString("id");
-                                String delivery_time = delivery.getString("delivery_time");
-                                String status = delivery.getString("status");
+                            if (jsonArray.length() == 0) {
+                                items.add(new CarouselItem(0, 0, "No delivery", "No delivery"));
+                            }
 
-                                // Add the image to the images list
-                                items.add(new CarouselItem(id, delivery_time, status));
-                                // Save the delivery ID to SharedPreferences
-                                JSONObject jsonObject1 = new JSONObject();
-                                jsonObject1.put("id", id);
-                                jsonObject1.put("delivery_time", delivery_time);
-                                jsonObject1.put("status", status);
-                                boolean success = sharedPreferencesDeliveries.edit()
-                                        .putString("idHome" + i, String.valueOf(jsonObject1))
-                                        .commit();  // Use commit() instead of apply()
+                            else {
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject delivery = jsonArray.getJSONObject(i);
 
-                                if (!success) {
-                                    Log.e("WebSocket", "Failed to save data to SharedPreferences");
-                                }
-                                else {
-                                    Log.d("WebSocket", "Saved data to SharedPreferences");
-                                    Log.d("WebSocket", sharedPreferencesDeliveries.getAll().toString());
+                                    Integer id = delivery.getInt("id");
+                                    Integer user_id = Integer.valueOf(idGet);
+                                    String delivery_time = delivery.getString("delivery_time");
+                                    String status = delivery.getString("status");
+
+                                    // Add the image to the images list
+                                    items.add(new CarouselItem(id, user_id, delivery_time, status));
+                                    // Save the delivery ID to SharedPreferences
+                                    JSONObject jsonObject1 = new JSONObject();
+                                    jsonObject1.put("id", id);
+                                    jsonObject1.put("user_id", user_id);
+                                    jsonObject1.put("delivery_time", delivery_time);
+                                    jsonObject1.put("status", status);
+                                    boolean success = sharedPreferencesDeliveries.edit()
+                                            .putString("idHome" + i, String.valueOf(jsonObject1))
+                                            .commit();  // Use commit() instead of apply()
+
+                                    if (!success) {
+                                        Log.e("WebSocket", "Failed to save data to SharedPreferences");
+                                    } else {
+                                        Log.d("WebSocket", "Saved data to SharedPreferences");
+                                        Log.d("WebSocket", sharedPreferencesDeliveries.getAll().toString());
+                                    }
                                 }
                             }
+
 
                             // Update the UI on the main thread
                             runOnUiThread(() -> {
@@ -208,6 +242,10 @@ public class Home_Handler extends AppCompatActivity {
             intent.putExtra("email", email);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        });
+
+        map.setOnClickListener(v -> {
+            // Open the map activity
         });
     }
     @Override
@@ -263,9 +301,15 @@ public class Home_Handler extends AppCompatActivity {
         return null;
     }
 
-    public void closeWebSocketConnectionHome() {
-        if (webSocket != null) {
-            webSocket.close(1000, "Closing the connection");
+    private void refreshData() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id", idGet);
+            jsonObject.put("del_id", 0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        webSocket.send(jsonObject.toString());
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

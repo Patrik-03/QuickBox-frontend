@@ -43,4 +43,18 @@
     <string name="changeLang">Change language</string>
     <string name="delivery_history">Delivery history</string>
     <string name="delete">Delete</string>
+    <string name="nodelivery">No deliveries</string>
+    <string name="delivery_details">Delivery details</string>
+    <string name="from">From:</string>
+    <string name="sent">Sent:</string>
+    <string name="delivy_time">Delivery time:</string>
+    <string name="status">Status:</string>
+    <string name="note">Note:</string>
+    <string name="expected">Expected:</string>
+    <string name="delivered">Delivered</string>
+    <string name="ontheGo">On the go</string>
+    <string name="received">Received by courier</string>
+    <string name="nearby">Nearby</string>
+    <string name="sentS">Sent</string>
+    <string name="noitems">No items</string>
 </resources>

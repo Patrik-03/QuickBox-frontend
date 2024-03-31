@@ -43,4 +43,18 @@
     <string name="changeLang">Zmeňte jazyk</string>
     <string name="delivery_history">História zásielok</string>
     <string name="delete">Vymazať</string>
+    <string name="nodelivery">Žiadne zásielky</string>
+    <string name="delivery_details">Detaily zásielky</string>
+    <string name="from">Od:</string>
+    <string name="sent">Odoslané:</string>
+    <string name="delivy_time">Čas doručenia:</string>
+    <string name="status">Stav:</string>
+    <string name="note">Poznámka:</string>
+    <string name="expected">Očakávané:</string>
+    <string name="delivered">Doručené</string>
+    <string name="ontheGo">Na ceste</string>
+    <string name="received">Vyzdvihnuté kuriérom</string>
+    <string name="nearby">Neďaleko</string>
+    <string name="sentS">Poslané</string>
+    <string name="noitems">Žiadne položky</string>
 </resources>

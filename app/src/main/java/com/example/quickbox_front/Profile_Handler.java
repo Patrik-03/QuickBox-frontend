@@ -64,6 +64,7 @@ public class Profile_Handler extends AppCompatActivity {
         history.setOnClickListener(v -> {
             Intent intent = new Intent(Profile_Handler.this, History_Handler.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("id", idH);
             startActivity(intent);
         });
 

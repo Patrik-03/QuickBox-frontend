@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
+
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -40,13 +41,17 @@
         <activity android:name=".Language_Handler"
             android:screenOrientation="portrait"/>
         <activity android:name=".CreateDel_Handler"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="com.google.mlkit.vision.DEPENDENCIES"
+                android:value="barcode_ui"
+                android:screenOrientation="portrait"/>
+        </activity>
         <activity android:name=".History_Handler"
             android:screenOrientation="portrait"/>
-        <meta-data
-            android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="barcode_ui"
+        <activity android:name=".Delivery_Handler"
             android:screenOrientation="portrait"/>
+
 
     </application>
 
