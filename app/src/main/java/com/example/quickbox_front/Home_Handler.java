@@ -45,6 +45,7 @@ public class Home_Handler extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     Boolean openConnection = false;
     Boolean nameSet = false;
+    Float longitude, latitude;
     String idGet;
 
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
@@ -68,6 +69,10 @@ public class Home_Handler extends AppCompatActivity {
 
         String email = sharedPreferences.getString("email", "");
         idGet = sharedPreferences.getString("id", "");
+
+        longitude = sharedPreferences.getFloat("longitude", 0);
+        latitude = sharedPreferences.getFloat("latitude", 0);
+
 
         Bitmap qr_code = generateQRCode(idGet);
 
@@ -100,7 +105,7 @@ public class Home_Handler extends AppCompatActivity {
             name.setText(getString(R.string.welcome) + sharedPreferences.getString("name", ""));
         }
         if (sharedPreferencesDeliveries.getAll().isEmpty()) {
-            items.add(new CarouselItem(0, 0, "No delivery", "No delivery"));
+            items.add(new CarouselItem(0, "No delivery", "No delivery"));
         } else {
             for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
                 try {
@@ -109,7 +114,7 @@ public class Home_Handler extends AppCompatActivity {
                     Integer user_id = Integer.valueOf(idGet);
                     String delivery_time = jsonObject.getString("delivery_time");
                     String status = jsonObject.getString("status");
-                    items.add(new CarouselItem(id, user_id, delivery_time, status));
+                    items.add(new CarouselItem(id, status, delivery_time));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -160,18 +165,15 @@ public class Home_Handler extends AppCompatActivity {
                     }
                     else {
                         try {
-                            // Parse the JSON string into a JSONObject
                             JSONObject jsonObject = new JSONObject(text);
 
-                            // Get the "items" JSONArray from the JSONObject
                             JSONArray jsonArray = jsonObject.getJSONArray("items");
 
-                            // Clear the images list
                             items.clear();
                             sharedPreferencesDeliveries.edit().clear().apply();
 
                             if (jsonArray.length() == 0) {
-                                items.add(new CarouselItem(0, 0, "No delivery", "No delivery"));
+                                items.add(new CarouselItem(0, "No delivery", "No delivery"));
                             }
 
                             else {
@@ -179,18 +181,24 @@ public class Home_Handler extends AppCompatActivity {
                                     JSONObject delivery = jsonArray.getJSONObject(i);
 
                                     Integer id = delivery.getInt("id");
+                                    String from = delivery.getString("from");
                                     Integer user_id = Integer.valueOf(idGet);
+                                    String sent_time = delivery.getString("sent_time");
                                     String delivery_time = delivery.getString("delivery_time");
                                     String status = delivery.getString("status");
+                                    String note = delivery.getString("note");
 
                                     // Add the image to the images list
-                                    items.add(new CarouselItem(id, user_id, delivery_time, status));
+                                    items.add(new CarouselItem(id, status, delivery_time));
                                     // Save the delivery ID to SharedPreferences
                                     JSONObject jsonObject1 = new JSONObject();
                                     jsonObject1.put("id", id);
                                     jsonObject1.put("user_id", user_id);
+                                    jsonObject1.put("from", from);
+                                    jsonObject1.put("sent_time", sent_time);
                                     jsonObject1.put("delivery_time", delivery_time);
                                     jsonObject1.put("status", status);
+                                    jsonObject1.put("note", note);
                                     boolean success = sharedPreferencesDeliveries.edit()
                                             .putString("idHome" + i, String.valueOf(jsonObject1))
                                             .commit();  // Use commit() instead of apply()
@@ -245,7 +253,11 @@ public class Home_Handler extends AppCompatActivity {
         });
 
         map.setOnClickListener(v -> {
-            // Open the map activity
+            Intent intent = new Intent(Home_Handler.this, Map_Handler.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("longitude", longitude);
+            intent.putExtra("latitude", latitude);
+            startActivity(intent);
         });
     }
     @Override

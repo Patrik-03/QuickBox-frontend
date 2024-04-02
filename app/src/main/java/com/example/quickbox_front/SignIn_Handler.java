@@ -77,25 +77,37 @@ public class SignIn_Handler extends AppCompatActivity {
                         Log.d("WebSocket", "Received message: " + text);
                         String resultID;
                         String resultEmail;
+                        String resultName;
+                        String resultLatitude;
+                        String resultLongitude;
                         try {
                             receivedMessage = new JSONObject(text);
                             resultID = receivedMessage.getString("id");
                             resultEmail = receivedMessage.getString("email");
+                            resultName = receivedMessage.getString("name");
+                            resultLongitude = receivedMessage.getString("longitude");
+                            resultLatitude = receivedMessage.getString("latitude");
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
+                        Log.d("WebSocket", resultLatitude + " " + resultLongitude);
                         // Check received message
                         if (!resultID.isEmpty() && resultEmail.equals(email.getText().toString())) {
                             // If credentials are correct, start Home_Handler activity
                             runOnUiThread(() -> {
                                 progressBar.setVisibility(View.GONE);
                                 Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
+                                intent.putExtra("longitude", resultLongitude);
+                                intent.putExtra("latitude", resultLatitude);
                                 webSocket.close(1000, "Closing the connection");
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putBoolean("isUserLoggedIn", true);
                                 editor.putString("id", resultID);
                                 editor.putString("email", resultEmail);
+                                editor.putString("name", resultName);
+                                editor.putFloat("longitude", Float.parseFloat(resultLongitude));
+                                editor.putFloat("latitude", Float.parseFloat(resultLatitude));
                                 editor.apply();
                                 startActivity(intent);
                                 finish(); // Add this line

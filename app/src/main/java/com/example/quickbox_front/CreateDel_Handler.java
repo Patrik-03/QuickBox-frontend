@@ -1,6 +1,5 @@
 package com.example.quickbox_front;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -20,10 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.mlkit.vision.barcode.common.Barcode;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -232,27 +228,10 @@ public class CreateDel_Handler extends AppCompatActivity {
         }
     }
     private void startScanning() {
-        GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
-                .setBarcodeFormats(
-                        Barcode.FORMAT_QR_CODE)
-                .build();
-        GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(this, options);
-
-        scanner
-                .startScan()
-                .addOnSuccessListener(
-                        barcode -> {
-                            // Task completed successfully
-                            receiveID.setText(barcode.getRawValue());
-                        })
-                .addOnCanceledListener(
-                        () -> {
-                            // Task was cancelled
-                        })
-                .addOnFailureListener(
-                        e -> {
-                            // Task failed with an exception
-                        });
+        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+        intentIntegrator.setPrompt("Scan QR Code");
+        intentIntegrator.setBeepEnabled(false);
+        intentIntegrator.initiateScan();
     }
 
     @Override
@@ -267,7 +246,6 @@ public class CreateDel_Handler extends AppCompatActivity {
                 // Permission denied
                 Toast.makeText(this, "Permission denied to use the camera", Toast.LENGTH_SHORT).show();
             }
-            return;
         }
     }
 }

@@ -7,6 +7,9 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -33,6 +36,8 @@
         <activity
             android:name=".SignUp_Handler"
             android:screenOrientation="portrait"/>
+        <activity android:name=".MapSignUp_Handler"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Home_Handler"
             android:screenOrientation="portrait"/>
@@ -51,7 +56,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Delivery_Handler"
             android:screenOrientation="portrait"/>
-
+        <activity android:name=".Map_Handler"
+            android:screenOrientation="portrait"/>
 
     </application>
 

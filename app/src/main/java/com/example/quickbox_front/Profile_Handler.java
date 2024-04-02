@@ -51,6 +51,7 @@ public class Profile_Handler extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isUserLoggedIn", false);
+            editor.clear();
             editor.apply();
 
             // Start the sign-in activity and clear all other activities from the stack

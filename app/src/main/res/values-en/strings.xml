@@ -57,4 +57,5 @@
     <string name="nearby">Nearby</string>
     <string name="sentS">Sent</string>
     <string name="noitems">No items</string>
+    <string name="confirm">Confirm</string>
 </resources>

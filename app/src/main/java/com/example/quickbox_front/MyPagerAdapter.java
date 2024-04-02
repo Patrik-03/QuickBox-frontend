@@ -42,10 +42,11 @@ public class MyPagerAdapter extends PagerAdapter {
         progressBar.setVisibility(View.VISIBLE);
 
         delivery.setOnClickListener(v -> {
-            Intent intent = new Intent(MyPagerAdapter.this.mContext, Delivery_Handler.class);
-            intent.putExtra("id", mItems.get(position).getId());
-            intent.putExtra("user_id", mItems.get(position).getUser_id());
-            MyPagerAdapter.this.mContext.startActivity(intent);
+            if (noDeliveries.getVisibility() == View.GONE) {
+                Intent intent = new Intent(MyPagerAdapter.this.mContext, Delivery_Handler.class);
+                intent.putExtra("id", mItems.get(position).getId());
+                MyPagerAdapter.this.mContext.startActivity(intent);
+            }
         });
 
         format_time = new Format_time(mItems.get(position).getTime());
@@ -55,7 +56,7 @@ public class MyPagerAdapter extends PagerAdapter {
             case "Sent":
                 id.setText("ID: " + mItems.get(position).getId().toString());
                 time.setText(mContext.getString(R.string.expected) + " " + format_time.getFormattedTime());
-                status.setText("Status: " + mContext.getString(R.string.sent));
+                status.setText("Status: " + mContext.getString(R.string.sentS));
                 progressBar.setProgress(0);
                 break;
             case "Received by courier":

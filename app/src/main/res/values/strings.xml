@@ -63,5 +63,6 @@
     <string name="received">Received by courier</string>
     <string name="nearby">Nearby</string>
     <string name="noitems">No items</string>
+    <string name="confirm">Confirm</string>
 
 </resources>
