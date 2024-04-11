@@ -1,9 +1,9 @@
 package com.example.quickbox_front;
 
 public class CarouselItem {
-    private final Integer id;
-    private final String time;
-    private final String status;
+    private Integer id;
+    private String time;
+    private String status;
 
     public CarouselItem(Integer id, String status, String time) {
         this.id = id;

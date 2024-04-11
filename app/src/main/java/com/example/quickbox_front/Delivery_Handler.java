@@ -14,13 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONObject;
 
-import okhttp3.WebSocket;
-
 public class Delivery_Handler extends AppCompatActivity {
     Button back;
     Format_time format_time;
-    WebSocket webSocket;
-    Boolean isConnected = false;
     TextView from, sentTime, deliveryTime, status, noteText;
 
     @Override

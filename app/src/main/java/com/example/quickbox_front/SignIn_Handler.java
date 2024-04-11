@@ -37,6 +37,7 @@ public class SignIn_Handler extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
         boolean isUserLoggedIn = sharedPreferences.getBoolean("isUserLoggedIn", false);
 
@@ -80,50 +81,55 @@ public class SignIn_Handler extends AppCompatActivity {
                         String resultName;
                         String resultLatitude;
                         String resultLongitude;
+
                         try {
                             receivedMessage = new JSONObject(text);
-                            resultID = receivedMessage.getString("id");
-                            resultEmail = receivedMessage.getString("email");
-                            resultName = receivedMessage.getString("name");
-                            resultLongitude = receivedMessage.getString("longitude");
-                            resultLatitude = receivedMessage.getString("latitude");
+                            if (receivedMessage.has("detail")) {
+                                // Handle incorrect credentials case
+                                runOnUiThread(() -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    signin.setVisibility(View.VISIBLE);
+                                    signup.setVisibility(View.VISIBLE);
+                                    textcreate.setVisibility(View.VISIBLE);
+                                    email.setError(getString(R.string.errorsignin));
+                                    password.setError(getString(R.string.errorsignin));
+                                });
+                            } else {
+                                resultID = receivedMessage.getString("id");
+                                resultEmail = receivedMessage.getString("email");
+                                resultName = receivedMessage.getString("name");
+                                resultLongitude = receivedMessage.getString("longitude");
+                                resultLatitude = receivedMessage.getString("latitude");
+                                Log.d("WebSocket", resultLatitude + " " + resultLongitude);
+                                // Check received message
+                                if (!resultID.isEmpty() && resultEmail.equals(email.getText().toString())) {
+                                    Log.d("WebSocket", resultLongitude + " " + resultLatitude);
+                                    // If credentials are correct, start Home_Handler activity
+                                    runOnUiThread(() -> {
+                                        progressBar.setVisibility(View.GONE);
+                                        Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
+                                        intent.putExtra("longitude", resultLongitude);
+                                        intent.putExtra("latitude", resultLatitude);
+                                        webSocket.close(1000, "Closing the connection");
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putBoolean("isUserLoggedIn", true);
+                                        editor.putString("id", resultID);
+                                        editor.putString("email", resultEmail);
+                                        editor.putString("name", resultName);
+                                        editor.putFloat("longitude", Float.parseFloat(resultLongitude));
+                                        editor.putFloat("latitude", Float.parseFloat(resultLatitude));
+                                        editor.apply();
+                                        startActivity(intent);
+                                        finish(); // Add this line
+                                    });
+                                }
+                            }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                        Log.d("WebSocket", resultLatitude + " " + resultLongitude);
-                        // Check received message
-                        if (!resultID.isEmpty() && resultEmail.equals(email.getText().toString())) {
-                            // If credentials are correct, start Home_Handler activity
-                            runOnUiThread(() -> {
-                                progressBar.setVisibility(View.GONE);
-                                Intent intent = new Intent(SignIn_Handler.this, Home_Handler.class);
-                                intent.putExtra("longitude", resultLongitude);
-                                intent.putExtra("latitude", resultLatitude);
-                                webSocket.close(1000, "Closing the connection");
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("isUserLoggedIn", true);
-                                editor.putString("id", resultID);
-                                editor.putString("email", resultEmail);
-                                editor.putString("name", resultName);
-                                editor.putFloat("longitude", Float.parseFloat(resultLongitude));
-                                editor.putFloat("latitude", Float.parseFloat(resultLatitude));
-                                editor.apply();
-                                startActivity(intent);
-                                finish(); // Add this line
-                            });
-                        } else {
-                            // If credentials are incorrect, show error message
-                            runOnUiThread(() -> {
-                                progressBar.setVisibility(View.GONE);
-                                signin.setVisibility(View.VISIBLE);
-                                signup.setVisibility(View.VISIBLE);
-                                textcreate.setVisibility(View.VISIBLE);
-                                email.setError(getString(R.string.errorsignin));
-                                password.setError(getString(R.string.errorsignin));
-                            });
-                        }
                     }
+
 
                     @Override
                     public void onClosed(WebSocket webSocket, int code, String reason) {
@@ -132,7 +138,8 @@ public class SignIn_Handler extends AppCompatActivity {
 
                     @Override
                     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                        Log.e("WebSocket", "Connection failed: " + t.getMessage());
+                       Log.e("WebSocket", "Connection failed: " + t.getMessage());
+
                     }
                 });
 

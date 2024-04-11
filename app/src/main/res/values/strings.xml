@@ -64,5 +64,6 @@
     <string name="nearby">Nearby</string>
     <string name="noitems">No items</string>
     <string name="confirm">Confirm</string>
+    <string name="nodelnearby">No deliveries nearby</string>
 
 </resources>

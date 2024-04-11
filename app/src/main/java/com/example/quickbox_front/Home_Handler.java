@@ -1,24 +1,36 @@
 package com.example.quickbox_front;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wearable.DataClient;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -26,6 +38,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -41,12 +54,17 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 1;
     private WebSocket webSocket;
+    DataClient dataClient;
+    WebSocketManager webSocketManager = WebSocketManager.getInstance();
     private SwipeRefreshLayout swipeRefreshLayout;
     Boolean openConnection = false;
     Boolean nameSet = false;
     Float longitude, latitude;
+    ImageView no_connection;
     String idGet;
+
 
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     @Override
@@ -59,7 +77,10 @@ public class Home_Handler extends AppCompatActivity {
         ImageButton profile = findViewById(R.id.profileH);
         Button create = findViewById(R.id.createDel);
         ImageButton map = findViewById(R.id.mapH);
-        TextView name = findViewById(R.id.nameH);
+
+        no_connection = findViewById(R.id.no_connection);
+
+        dataClient = Wearable.getDataClient(Home_Handler.this);
 
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
@@ -99,11 +120,6 @@ public class Home_Handler extends AppCompatActivity {
 
         List<CarouselItem> items = new ArrayList<>();
 
-        if (sharedPreferences.getString("name", "").isEmpty()) {
-            name.setText(getString(R.string.welcome) + email);
-        } else {
-            name.setText(getString(R.string.welcome) + sharedPreferences.getString("name", ""));
-        }
         if (sharedPreferencesDeliveries.getAll().isEmpty()) {
             items.add(new CarouselItem(0, "No delivery", "No delivery"));
         } else {
@@ -111,7 +127,6 @@ public class Home_Handler extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
                     Integer id = jsonObject.getInt("id");
-                    Integer user_id = Integer.valueOf(idGet);
                     String delivery_time = jsonObject.getString("delivery_time");
                     String status = jsonObject.getString("status");
                     items.add(new CarouselItem(id, status, delivery_time));
@@ -119,67 +134,65 @@ public class Home_Handler extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            Log.d("WebSocket", items.toString());
-            runOnUiThread(() -> {
-                MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, items);
-                viewPager.setAdapter(myPagerAdapter);
-            });
         }
+        runOnUiThread(() -> {
+            MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, items);
+            viewPager.setAdapter(myPagerAdapter);
+        });
+        openConnection = true;
+
+        webSocketManager.startWebSocket(idGet);
 
 
-        if (!openConnection) {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("ws://" + IPServer.IP + ":8000/ws/home")
-                    .build();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("ws://" + IPServer.IP + ":8000/ws/home")
+                .build();
 
-            webSocket = client.newWebSocket(request, new WebSocketListener() {
-                @Override
-                public void onOpen(WebSocket webSocket, Response response) {
-                    // WebSocket connection established
-                    super.onOpen(webSocket, response);
-                    Log.d("WebSocket", "Connection established (Home)");
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject.put("id", idGet);
-                        jsonObject.put("del_id", 0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    webSocket.send(jsonObject.toString());
+        webSocket = client.newWebSocket(request, new WebSocketListener() {
+            @Override
+            public void onOpen(WebSocket webSocket, Response response) {
+                // WebSocket connection established
+                super.onOpen(webSocket, response);
+                Log.d("WebSocket", "Connection established (Home)");
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("id", idGet);
+                    jsonObject.put("del_id", 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                webSocket.send(jsonObject.toString());
+            }
 
-                @Override
-                public void onMessage(WebSocket webSocket, String text) {
-                    Log.d("WebSocket", "Received message: " + text);
-                    if (!nameSet) {
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                Log.d("WebSocket", "Received message: " + text);
+                try {
+                    JSONObject jsonObject = new JSONObject(text);
+                    if (jsonObject.has("name")) {
                         try {
-                            JSONObject jsonObject = new JSONObject(text);
                             String nameGet = jsonObject.getString("name");
                             sharedPreferences.edit().putString("name", nameGet).apply();
-                            name.setText(getString(R.string.welcome) + nameGet);
                             nameSet = true;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    else {
+                    } else if (jsonObject.has("items")) {
                         try {
-                            JSONObject jsonObject = new JSONObject(text);
-
                             JSONArray jsonArray = jsonObject.getJSONArray("items");
+                            Log.d("WebSocket", jsonArray.toString());
+                            sendDataToWearable(jsonArray.toString());
 
                             items.clear();
                             sharedPreferencesDeliveries.edit().clear().apply();
 
                             if (jsonArray.length() == 0) {
+                                Log.d("WebSocket", "No deliveries");
                                 items.add(new CarouselItem(0, "No delivery", "No delivery"));
-                            }
-
-                            else {
+                            } else {
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject delivery = jsonArray.getJSONObject(i);
-
                                     Integer id = delivery.getInt("id");
                                     String from = delivery.getString("from");
                                     Integer user_id = Integer.valueOf(idGet);
@@ -205,14 +218,10 @@ public class Home_Handler extends AppCompatActivity {
 
                                     if (!success) {
                                         Log.e("WebSocket", "Failed to save data to SharedPreferences");
-                                    } else {
-                                        Log.d("WebSocket", "Saved data to SharedPreferences");
-                                        Log.d("WebSocket", sharedPreferencesDeliveries.getAll().toString());
                                     }
+
                                 }
                             }
-
-
                             // Update the UI on the main thread
                             runOnUiThread(() -> {
                                 MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, items);
@@ -222,19 +231,32 @@ public class Home_Handler extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }
+                    else if (jsonObject.has("type")) {
+                        Log.d("WebSocket", "Received location: " + jsonObject.toString());
+                        String title = "QuickBox";
+                        String id = jsonObject.getString("delivery_id");
+                        String status = jsonObject.getString("status");
+                        String message = "Delivery #" + id + " is now: " + status;
 
-                @Override
-                public void onClosed(WebSocket webSocket, int code, String reason) {
-                    Log.d("WebSocket", "Connection closed (Home)");
+                        Intent intent = new Intent(getApplicationContext(), Home_Handler.class);
+                        showNotification(getApplicationContext(), title, message, intent, 0);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            }
+                @Override
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                Log.d("WebSocket", "Connection closed (Home)");
+            }
 
-                @Override
-                public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                    Log.e("WebSocket", "Connection failed: " + t.getMessage());
-                }
-            });
-        }
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                Log.e("WebSocket", "Connection failed: " + t.getMessage());
+
+            }
+        });
+
 
         profile.setOnClickListener(v -> {
             Intent intent = new Intent(Home_Handler.this, Profile_Handler.class);
@@ -259,6 +281,61 @@ public class Home_Handler extends AppCompatActivity {
             intent.putExtra("latitude", latitude);
             startActivity(intent);
         });
+    }
+
+
+    private void sendDataToWearable(String data) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/active_deliveries");
+        putDataMapReq.getDataMap().putString("message", data);
+        putDataMapReq.setUrgent();
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Task<DataItem> putDataTask = dataClient.putDataItem(putDataReq);
+        putDataTask.addOnSuccessListener(dataItem -> Log.d("Wearable", "Data item set: " + dataItem));
+        putDataTask.addOnFailureListener(e -> Log.e("Wearable", "Failed to set data item: " + e.getMessage()));
+      //  NodeClient nodeClient = Wearable.getNodeClient(this);
+//
+      //  nodeClient.getConnectedNodes()
+      //          .addOnSuccessListener(nodes -> {
+      //              for (Node node : nodes) {
+      //                  if (node != null && node.isNearby()) {
+      //                      String nodeId = node.getId();
+      //                      Log.d("Wearable", "Sending data to node: " + nodeId);
+      //                      // Open a channel to the node
+      //                      Task<Integer> sendTask =
+      //                              Wearable.getMessageClient(Home_Handler.this).sendMessage(
+      //                                      nodeId, "/active_deliveries", data.getBytes());
+      //                      sendTask.addOnSuccessListener(
+      //                              result -> Log.d("WebS", "Message sent successfully: " + result));
+      //                      sendTask.addOnFailureListener(
+      //                              e -> Log.e("WebS", "Failed to send message: " + e.getMessage()));
+      //                  }
+      //              }
+      //          })
+      //          .addOnFailureListener(e -> {
+      //              Log.e("Wearable", "Failed to get connected nodes: " + e.getMessage());
+      //          });
+    }
+
+
+    public void showNotification(Context context, String title, String message, Intent intent, int reqCode) {
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+        String CHANNEL_ID = "QuickBox";
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.quickbox_l)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentIntent(pendingIntent);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        CharSequence name = "QuickBox";// The user-visible name of the channel.
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+        notificationManager.createNotificationChannel(mChannel);
+        notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
+
+        Log.d("showNotification", "showNotification: " + reqCode);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -285,6 +362,7 @@ public class Home_Handler extends AppCompatActivity {
         conf.locale = locale;
         res.updateConfiguration(conf, dm);
     }
+
     private Bitmap generateQRCode(String email) {
         try {
             String qrCodeData = email;
@@ -322,6 +400,13 @@ public class Home_Handler extends AppCompatActivity {
             e.printStackTrace();
         }
         webSocket.send(jsonObject.toString());
+        JSONObject jsonObject1 = new JSONObject();
+        try {
+            jsonObject1.put("id", idGet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        webSocketManager.sendMsg(jsonObject1.toString());
         swipeRefreshLayout.setRefreshing(false);
     }
 }

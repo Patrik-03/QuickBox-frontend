@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "QuickBox-Front"
 include(":app")
+include(":quickboxwear")

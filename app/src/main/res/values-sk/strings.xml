@@ -58,4 +58,5 @@
     <string name="sentS">Poslané</string>
     <string name="noitems">Žiadne položky</string>
     <string name="confirm">Potvrdiť</string>
+    <string name="nodelnearby">Žiadne zásielky pri vás</string>
 </resources>

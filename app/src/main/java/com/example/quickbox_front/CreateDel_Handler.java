@@ -83,7 +83,7 @@ public class CreateDel_Handler extends AppCompatActivity {
                 Log.d("WebSocket", "Received message: " + text);
 
                 // Handle received message
-                JSONObject jsonObject = null;
+                JSONObject jsonObject;
                 String from;
                 String sent_time;
                 String delivery_time;
@@ -91,35 +91,37 @@ public class CreateDel_Handler extends AppCompatActivity {
                 String status;
                 try {
                     jsonObject = new JSONObject(text);
-                    from = jsonObject.getString("from");
-                    sent_time = jsonObject.getString("sent_time");
-                    delivery_time = jsonObject.getString("delivery_time");
-                    delivery_type = jsonObject.getString("delivery_type");
-                    status = jsonObject.getString("status");
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                    if (jsonObject.has("detail")) {
+                        runOnUiThread(() -> {
+                            progressBar.setVisibility(View.GONE);
+                            create.setVisibility(View.VISIBLE);
+                            AlertDialog alert = new AlertDialog.Builder(CreateDel_Handler.this)
+                                    .setTitle("Error")
+                                    .setMessage(getString(R.string.invalid))
+                                    .setPositiveButton("OK", null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.map_round);
+                        });
+                    } else {
+                        from = jsonObject.getString("from");
+                        sent_time = jsonObject.getString("sent_time");
+                        delivery_time = jsonObject.getString("delivery_time");
+                        delivery_type = jsonObject.getString("delivery_type");
+                        status = jsonObject.getString("status");
 
-                if (!from.isEmpty() && from.equals(id) && !sent_time.isEmpty() && !delivery_time.isEmpty()
-                        && !delivery_type.isEmpty() && !status.isEmpty()) {
-                    Log.d("WebSocket", "Delivery created successfully");
-                    runOnUiThread(() -> {
-                        webSocket.close(1000, "Closing the connection");
-                        progressBar.setVisibility(View.INVISIBLE);
-                        finish();
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        create.setVisibility(View.VISIBLE);
-                        AlertDialog alert = new AlertDialog.Builder(CreateDel_Handler.this)
-                                .setTitle("Error")
-                                .setMessage(getString(R.string.invalid))
-                                .setPositiveButton("OK", null)
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                        Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.round_corners);
-                    });
+                        if (!from.isEmpty() && from.equals(id) && !sent_time.isEmpty() && !delivery_time.isEmpty()
+                                && !delivery_type.isEmpty() && !status.isEmpty()) {
+                            Log.d("WebSocket", "Delivery created successfully");
+                            runOnUiThread(() -> {
+                                webSocket.close(1000, "Closing the connection");
+                                progressBar.setVisibility(View.INVISIBLE);
+                                finish();
+                            });
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 

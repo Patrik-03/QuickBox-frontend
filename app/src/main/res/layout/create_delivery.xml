@@ -11,13 +11,12 @@
         android:layout_width="95dp"
         android:layout_height="95dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="40dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view4"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.326"
         tools:visibility="visible" />
 
     <View
@@ -240,5 +239,21 @@
         app:layout_constraintTop_toTopOf="@+id/view2"
         app:layout_constraintVertical_bias="0.191"
         app:layout_constraintWidth_percent="0.8" />
+
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.638"
+        app:layout_constraintWidth_percent="0.2"
+        app:srcCompat="@drawable/no_access"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

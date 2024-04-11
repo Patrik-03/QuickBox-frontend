@@ -2,6 +2,7 @@ package com.example.quickbox_front;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class MyPagerAdapter extends PagerAdapter {
         mItems = items;
     }
 
+    @NonNull
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -50,7 +53,6 @@ public class MyPagerAdapter extends PagerAdapter {
         });
 
         format_time = new Format_time(mItems.get(position).getTime());
-            // Set the ID, time, and status of the item
 
         switch (mItems.get(position).getStatus()) {
             case "Sent":
@@ -84,6 +86,7 @@ public class MyPagerAdapter extends PagerAdapter {
                 progressBar.setProgress(100);
                 break;
             case "No delivery":
+                Log.d("WebSocket", "No delivery");
                 id.setVisibility(View.GONE);
                 time.setVisibility(View.GONE);
                 status.setVisibility(View.GONE);

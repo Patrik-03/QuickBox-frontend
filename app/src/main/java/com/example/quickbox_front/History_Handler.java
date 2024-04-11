@@ -87,16 +87,21 @@ public class History_Handler extends AppCompatActivity {
                             JSONArray jsonArray = jsonObject.getJSONArray("items");
                             JSONObject receivedMessage2 = jsonArray.getJSONObject(0);
                             String type = receivedMessage2.getString("type");
+                            Log.d("WebSocket", "Received type: " + type);
                             if (type.equals("delete")) {
                                 runOnUiThread(() -> {
                                     linearLayout.removeAllViews();
                                     progressBar.setVisibility(ProgressBar.GONE);
                                     noDeliveries.setVisibility(TextView.VISIBLE);
+                                    linearLayout.invalidate();
                                 });
                             }
                             else if (type.equals("history")) {
                                 if (receivedMessage2.getString("id").equals("0")){
-                                    runOnUiThread(() -> noDeliveries.setVisibility(TextView.VISIBLE));
+                                    runOnUiThread(() -> {
+                                            delete.setVisibility(Button.GONE);
+                                            noDeliveries.setVisibility(TextView.VISIBLE);
+                                    });
                                 }
                                 else {
                                     runOnUiThread(() -> noDeliveries.setVisibility(TextView.GONE));
@@ -147,7 +152,10 @@ public class History_Handler extends AppCompatActivity {
                     }
                 });
 
-        back.setOnClickListener(v -> finish());
+        back.setOnClickListener(v -> {
+            webSocket.close(1000, "Closing connection");
+            finish();
+        });
         delete.setOnClickListener(v -> {
             delete.setVisibility(Button.GONE);
             progressBar.setVisibility(ProgressBar.VISIBLE);

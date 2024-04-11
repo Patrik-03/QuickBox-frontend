@@ -7,11 +7,13 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="com.google.android.gms.permission.WEARABLE_DATA_LAYER"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -22,8 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickBoxFront"
         tools:targetApi="31"
-        android:networkSecurityConfig="@xml/network_sec"
-        >
+        android:networkSecurityConfig="@xml/network_sec">
         <activity
             android:name=".SignIn_Handler"
             android:exported="true"
@@ -40,7 +41,12 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".Home_Handler"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_SENDER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Profile_Handler"
             android:screenOrientation="portrait"/>
         <activity android:name=".Language_Handler"

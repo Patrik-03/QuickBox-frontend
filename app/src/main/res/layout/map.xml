@@ -11,10 +11,11 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="1"
-        app:layout_constraintHeight_percent="1">
+        app:layout_constraintWidth_percent="1">
+
     </org.osmdroid.views.MapView>
 
     <Button
@@ -47,6 +48,22 @@
         app:layout_constraintVertical_bias="0.981"
         app:layout_constraintWidth_percent="0.2" />
 
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.028"
+        app:layout_constraintWidth_percent="0.2"
+        app:srcCompat="@drawable/no_access"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/hidden_panel"
         android:layout_width="0dp"
@@ -64,6 +81,23 @@
         app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="0.9"
         tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/noDel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeMaxTextSize="32sp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/nodelnearby"
+            android:textAlignment="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/scrollDel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.6"
+            tools:visibility="visible" />
 
         <ScrollView
             android:id="@+id/scrollDel"
