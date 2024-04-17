@@ -58,5 +58,7 @@
     <string name="sentS">Poslané</string>
     <string name="noitems">Žiadne položky</string>
     <string name="confirm">Potvrdiť</string>
-    <string name="nodelnearby">Žiadne zásielky pri vás</string>
+    <string name="nodelnearby">Žiadne zásielky v okolí</string>
+    <string name="backRunnig">Aplikácie beží na pozadí</string>
+    <string name="map">Mapa</string>
 </resources>

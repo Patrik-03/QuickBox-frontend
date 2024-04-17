@@ -4,17 +4,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.Manifest;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -35,15 +38,13 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class CreateDel_Handler extends AppCompatActivity {
+    private volatile boolean running = true;
     private WebSocket webSocket;
-    Button back;
+    Button back, create;
     ImageButton qr_scan;
-    EditText receiveID;
-    EditText note;
-    CheckBox economy;
-    CheckBox standard;
-    CheckBox fast;
-    Button create;
+    ImageView noConnection;
+    EditText receiveID,note;
+    CheckBox economy, standard, fast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +59,11 @@ public class CreateDel_Handler extends AppCompatActivity {
         standard = findViewById(R.id.standard);
         fast = findViewById(R.id.fast);
         create = findViewById(R.id.createD);
+        noConnection = findViewById(R.id.no_connection);
         ProgressBar progressBar = findViewById(R.id.progressBarUp);
 
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
         String id = sharedPreferences.getString("id", "");
 
         OkHttpClient client = new OkHttpClient();
@@ -68,81 +71,91 @@ public class CreateDel_Handler extends AppCompatActivity {
                 .url("ws://" + IPServer.IP + ":8000/ws/create_delivery")
                 .build();
 
-        webSocket = client.newWebSocket(request, new WebSocketListener() {
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                // WebSocket connection established
-                super.onOpen(webSocket, response);
-                Log.d("WebSocket", "Connection established (Create Delivery)");
-            }
-
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                // Receiving messages
-                super.onMessage(webSocket, text);
-                Log.d("WebSocket", "Received message: " + text);
-
-                // Handle received message
-                JSONObject jsonObject;
-                String from;
-                String sent_time;
-                String delivery_time;
-                String delivery_type;
-                String status;
-                try {
-                    jsonObject = new JSONObject(text);
-                    if (jsonObject.has("detail")) {
-                        runOnUiThread(() -> {
-                            progressBar.setVisibility(View.GONE);
-                            create.setVisibility(View.VISIBLE);
-                            AlertDialog alert = new AlertDialog.Builder(CreateDel_Handler.this)
-                                    .setTitle("Error")
-                                    .setMessage(getString(R.string.invalid))
-                                    .setPositiveButton("OK", null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.map_round);
-                        });
-                    } else {
-                        from = jsonObject.getString("from");
-                        sent_time = jsonObject.getString("sent_time");
-                        delivery_time = jsonObject.getString("delivery_time");
-                        delivery_type = jsonObject.getString("delivery_type");
-                        status = jsonObject.getString("status");
-
-                        if (!from.isEmpty() && from.equals(id) && !sent_time.isEmpty() && !delivery_time.isEmpty()
-                                && !delivery_type.isEmpty() && !status.isEmpty()) {
-                            Log.d("WebSocket", "Delivery created successfully");
-                            runOnUiThread(() -> {
-                                webSocket.close(1000, "Closing the connection");
-                                progressBar.setVisibility(View.INVISIBLE);
-                                finish();
-                            });
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (sharedPreferencesConnection.getBoolean("connection", false)) {
+            webSocket = client.newWebSocket(request, new WebSocketListener() {
+                @Override
+                public void onOpen(WebSocket webSocket, Response response) {
+                    // WebSocket connection established
+                    super.onOpen(webSocket, response);
+                    Log.d("WebSocket", "Connection established (Create Delivery)");
                 }
-            }
 
-            @Override
-            public void onClosing(WebSocket webSocket, int code, String reason) {
-                // WebSocket is about to close
-                super.onClosing(webSocket, code, reason);
-            }
+                @Override
+                public void onMessage(WebSocket webSocket, String text) {
+                    // Receiving messages
+                    super.onMessage(webSocket, text);
+                    Log.d("WebSocket", "Received message: " + text);
 
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                // WebSocket connection closed
-                super.onClosed(webSocket, code, reason);
-                Log.d("WebSocket", "Connection is closed (Create Delivery)");
-            }
-        });
+                    // Handle received message
+                    JSONObject jsonObject;
+                    String from;
+                    String sent_time;
+                    String delivery_time;
+                    String delivery_type;
+                    String status;
+                    try {
+                        jsonObject = new JSONObject(text);
+                        if (jsonObject.has("detail")) {
+                            runOnUiThread(() -> {
+                                progressBar.setVisibility(View.GONE);
+                                create.setVisibility(View.VISIBLE);
+                                AlertDialog alert = new AlertDialog.Builder(CreateDel_Handler.this)
+                                        .setTitle("Error")
+                                        .setMessage(getString(R.string.invalid))
+                                        .setPositiveButton("OK", null)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                                Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.alert_round);
+                            });
+                        } else {
+                            from = jsonObject.getString("from");
+                            sent_time = jsonObject.getString("sent_time");
+                            delivery_time = jsonObject.getString("delivery_time");
+                            delivery_type = jsonObject.getString("delivery_type");
+                            status = jsonObject.getString("status");
+
+                            if (!from.isEmpty() && from.equals(id) && !sent_time.isEmpty() && !delivery_time.isEmpty()
+                                    && !delivery_type.isEmpty() && !status.isEmpty()) {
+                                Log.d("WebSocket", "Delivery created successfully");
+                                runOnUiThread(() -> {
+                                    webSocket.close(1000, "Closing the connection");
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    finish();
+                                    overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
+                                });
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onClosing(WebSocket webSocket, int code, String reason) {
+                    // WebSocket is about to close
+                    super.onClosing(webSocket, code, reason);
+                }
+
+                @Override
+                public void onClosed(WebSocket webSocket, int code, String reason) {
+                    // WebSocket connection closed
+                    super.onClosed(webSocket, code, reason);
+                    Log.d("WebSocket", "Connection is closed (Create Delivery)");
+                }
+            });
+        }
+        else{
+            Thread thread = getThread(sharedPreferencesConnection);
+            thread.start();
+        }
 
 
         back.setOnClickListener(v -> {
-            webSocket.close(1000, "Closing the connection");
+            if (sharedPreferencesConnection.getBoolean("connection", false)){
+                webSocket.close(1000, "Closing the connection");
+            }
             finish();
+            overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
         });
 
         qr_scan.setOnClickListener(v -> {
@@ -214,6 +227,28 @@ public class CreateDel_Handler extends AppCompatActivity {
                 }
             }
         });
+    }
+    @NonNull
+    private Thread getThread(SharedPreferences sharedPreferencesConnection) {
+        final Handler handler = new Handler();
+        Thread thread = new Thread(() -> {
+            while (running) {
+                try {
+                    Thread.sleep(2000);
+                    handler.post(() -> {
+                        if (sharedPreferencesConnection.getBoolean("connection", false)) {
+                            noConnection.setVisibility(View.GONE);
+                            running = false;
+                        } else {
+                            noConnection.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return thread;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

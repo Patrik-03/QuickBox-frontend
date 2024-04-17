@@ -51,7 +51,10 @@ public class Language_Handler extends AppCompatActivity {
             languageSK.setVisibility(View.INVISIBLE);
         }
 
-        back.setOnClickListener(v -> finish());
+        back.setOnClickListener(v -> {
+            finish();
+            overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
+        });
 
         english.setOnClickListener(v -> {
             if (!Locale.getDefault().getLanguage().equals("en")) {

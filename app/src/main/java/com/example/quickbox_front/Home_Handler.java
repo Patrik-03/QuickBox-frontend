@@ -4,24 +4,36 @@ import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.provider.Settings;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -31,21 +43,15 @@ import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -57,13 +63,17 @@ public class Home_Handler extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
     private WebSocket webSocket;
     DataClient dataClient;
+    Handler handler = new Handler(Looper.getMainLooper());
     WebSocketManager webSocketManager = WebSocketManager.getInstance();
     private SwipeRefreshLayout swipeRefreshLayout;
-    Boolean openConnection = false;
     Boolean nameSet = false;
     Float longitude, latitude;
     ImageView no_connection;
     String idGet;
+    WebSocketListener webSocketListener;
+    WebSocketForegroundService webSocketService;
+    boolean openConnection = false;
+    private boolean isBound = false;
 
 
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
@@ -74,11 +84,33 @@ public class Home_Handler extends AppCompatActivity {
         loadLocale();
         setContentView(R.layout.home);
 
+
+        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            AlertDialog alert = new AlertDialog.Builder(this)
+                    .setTitle("Enable Notifications")
+                    .setMessage("Please enable notifications for this app.")
+                    .setPositiveButton("Enable", (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                        startActivity(intent);
+                        finish();
+                    })
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.alert_round);
+        }
+
         ImageButton profile = findViewById(R.id.profileH);
         Button create = findViewById(R.id.createDel);
-        ImageButton map = findViewById(R.id.mapH);
+        CardView map = findViewById(R.id.mapH);
 
         no_connection = findViewById(R.id.no_connection);
+
+        // Bind to the WebSocketForegroundService
+        Intent serviceIntent = new Intent(this, WebSocketForegroundService.class);
+        startForegroundService(serviceIntent);
 
         dataClient = Wearable.getDataClient(Home_Handler.this);
 
@@ -87,15 +119,15 @@ public class Home_Handler extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
         SharedPreferences sharedPreferencesDeliveries = getSharedPreferences("Deliveries", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesMap = getSharedPreferences("Map", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesHistory = getSharedPreferences("History", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
 
         String email = sharedPreferences.getString("email", "");
         idGet = sharedPreferences.getString("id", "");
 
         longitude = sharedPreferences.getFloat("longitude", 0);
         latitude = sharedPreferences.getFloat("latitude", 0);
-
-
-        Bitmap qr_code = generateQRCode(idGet);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -140,19 +172,15 @@ public class Home_Handler extends AppCompatActivity {
             viewPager.setAdapter(myPagerAdapter);
         });
         openConnection = true;
-
-        webSocketManager.startWebSocket(idGet);
-
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("ws://" + IPServer.IP + ":8000/ws/home")
                 .build();
 
-        webSocket = client.newWebSocket(request, new WebSocketListener() {
+        webSocket = client.newWebSocket(request, webSocketListener = new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
-                // WebSocket connection established
+                webSocketManager.startWebSocket(idGet,sharedPreferencesMap);
                 super.onOpen(webSocket, response);
                 Log.d("WebSocket", "Connection established (Home)");
                 JSONObject jsonObject = new JSONObject();
@@ -167,13 +195,19 @@ public class Home_Handler extends AppCompatActivity {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                Log.d("WebSocket", "Received message: " + text);
+                Log.d("WebSocket", "Received message HOME: " + text);
+                openConnection = true;
+                runOnUiThread(() -> no_connection.setVisibility(View.GONE));
+                sharedPreferencesConnection.getAll().clear();
+                sharedPreferencesConnection.edit().putBoolean("connection", true).apply();
                 try {
                     JSONObject jsonObject = new JSONObject(text);
                     if (jsonObject.has("name")) {
                         try {
                             String nameGet = jsonObject.getString("name");
+                            String qrCode = jsonObject.getString("qr_code");
                             sharedPreferences.edit().putString("name", nameGet).apply();
+                            sharedPreferences.edit().putString("qr_code", qrCode).apply();
                             nameSet = true;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -222,7 +256,6 @@ public class Home_Handler extends AppCompatActivity {
 
                                 }
                             }
-                            // Update the UI on the main thread
                             runOnUiThread(() -> {
                                 MyPagerAdapter myPagerAdapter = new MyPagerAdapter(Home_Handler.this, items);
                                 viewPager.setAdapter(myPagerAdapter);
@@ -238,8 +271,25 @@ public class Home_Handler extends AppCompatActivity {
                         String status = jsonObject.getString("status");
                         String message = "Delivery #" + id + " is now: " + status;
 
+                        if (status.equals("Delivered")) {
+                            for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
+                                try {
+                                    JSONObject jsonObject1 = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
+                                    if (jsonObject1.getInt("id") == Integer.parseInt(id)) {
+                                        sharedPreferencesHistory.edit()
+                                                .putString("idHistory", String.valueOf(jsonObject1))
+                                                .apply();
+                                        Log.e("WebSocket", "Delivery #" + id + " has been moved to history");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
                         Intent intent = new Intent(getApplicationContext(), Home_Handler.class);
                         showNotification(getApplicationContext(), title, message, intent, 0);
+                        refreshData();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -248,41 +298,90 @@ public class Home_Handler extends AppCompatActivity {
                 @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
                 Log.d("WebSocket", "Connection closed (Home)");
-            }
+                    openConnection = false;  // Add this line
+                }
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 Log.e("WebSocket", "Connection failed: " + t.getMessage());
-
+                runOnUiThread(() -> no_connection.setVisibility(View.VISIBLE));
+                webSocketManager.stopWebSocket();
+                handler.removeCallbacksAndMessages(null);
+                sharedPreferencesConnection.getAll().clear();
+                sharedPreferencesConnection.edit().putBoolean("connection", false).apply();
+                openConnection = false;  // Add this line
+                Runnable runnableCode = new Runnable() {
+                    @Override
+                    public void run() {
+                        // Try to reconnect only if the connection was not previously open
+                        if (!openConnection) {
+                            Home_Handler.this.webSocket = client.newWebSocket(request, Home_Handler.this.webSocketListener);
+                            handler.postDelayed(this, 5000);
+                        }
+                    }
+                };
+                handler.post(runnableCode);
             }
         });
 
 
         profile.setOnClickListener(v -> {
-            Intent intent = new Intent(Home_Handler.this, Profile_Handler.class);
-            intent.putExtra("id", idGet);
-            intent.putExtra("email", email);
-            intent.putExtra("qr_code", qr_code);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivityForResult(intent, 1);
+            Intent intent2 = new Intent(Home_Handler.this, Profile_Handler.class);
+            intent2.putExtra("id", idGet);
+            intent2.putExtra("email", email);
+            // Retrieve Base64 string from SharedPreferences
+            String qrCode = sharedPreferences.getString("qr_code", "");
+            Bitmap qrCodeBitmap = convertBase64StringToBitmap(qrCode);
+            intent2.putExtra("qr_code", qrCodeBitmap);
+            intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivityForResult(intent2, 1);
+            overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
         });
 
         create.setOnClickListener(v -> {
-            Intent intent = new Intent(Home_Handler.this, CreateDel_Handler.class);
-            intent.putExtra("email", email);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Intent intent3 = new Intent(Home_Handler.this, CreateDel_Handler.class);
+            intent3.putExtra("email", email);
+            intent3.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent3);
+            overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
         });
 
         map.setOnClickListener(v -> {
-            Intent intent = new Intent(Home_Handler.this, Map_Handler.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("longitude", longitude);
-            intent.putExtra("latitude", latitude);
-            startActivity(intent);
+            Intent intent4 = new Intent(Home_Handler.this, Map_Handler.class);
+            intent4.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent4.putExtra("longitude", longitude);
+            intent4.putExtra("latitude", latitude);
+            startActivity(intent4);
+            overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
         });
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unbind from the service
+        if (isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+    }
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            WebSocketForegroundService.LocalBinder binder = (WebSocketForegroundService.LocalBinder) service;
+            webSocketService = binder.getService();
+            isBound = true;
+        }
 
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            isBound = false;
+        }
+    };
+
+    public Bitmap convertBase64StringToBitmap(String base64String) {
+        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
 
     private void sendDataToWearable(String data) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/active_deliveries");
@@ -292,28 +391,6 @@ public class Home_Handler extends AppCompatActivity {
         Task<DataItem> putDataTask = dataClient.putDataItem(putDataReq);
         putDataTask.addOnSuccessListener(dataItem -> Log.d("Wearable", "Data item set: " + dataItem));
         putDataTask.addOnFailureListener(e -> Log.e("Wearable", "Failed to set data item: " + e.getMessage()));
-      //  NodeClient nodeClient = Wearable.getNodeClient(this);
-//
-      //  nodeClient.getConnectedNodes()
-      //          .addOnSuccessListener(nodes -> {
-      //              for (Node node : nodes) {
-      //                  if (node != null && node.isNearby()) {
-      //                      String nodeId = node.getId();
-      //                      Log.d("Wearable", "Sending data to node: " + nodeId);
-      //                      // Open a channel to the node
-      //                      Task<Integer> sendTask =
-      //                              Wearable.getMessageClient(Home_Handler.this).sendMessage(
-      //                                      nodeId, "/active_deliveries", data.getBytes());
-      //                      sendTask.addOnSuccessListener(
-      //                              result -> Log.d("WebS", "Message sent successfully: " + result));
-      //                      sendTask.addOnFailureListener(
-      //                              e -> Log.e("WebS", "Failed to send message: " + e.getMessage()));
-      //                  }
-      //              }
-      //          })
-      //          .addOnFailureListener(e -> {
-      //              Log.e("Wearable", "Failed to get connected nodes: " + e.getMessage());
-      //          });
     }
 
 
@@ -322,7 +399,7 @@ public class Home_Handler extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         String CHANNEL_ID = "QuickBox";
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.quickbox_l)
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
@@ -363,34 +440,6 @@ public class Home_Handler extends AppCompatActivity {
         res.updateConfiguration(conf, dm);
     }
 
-    private Bitmap generateQRCode(String email) {
-        try {
-            String qrCodeData = email;
-            String charset = "UTF-8";
-
-
-            Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
-            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
-
-            BitMatrix matrix = new MultiFormatWriter().encode(
-                    new String(qrCodeData.getBytes(charset), charset),
-                    BarcodeFormat.QR_CODE, 350, 350, hintMap);
-
-            int width = matrix.getWidth();
-            int height = matrix.getHeight();
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bitmap.setPixel(x, y, matrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
-                }
-            }
-            return bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private void refreshData() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -406,7 +455,6 @@ public class Home_Handler extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        webSocketManager.sendMsg(jsonObject1.toString());
         swipeRefreshLayout.setRefreshing(false);
     }
 }

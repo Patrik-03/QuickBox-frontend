@@ -8,10 +8,12 @@ import android.location.GpsStatus;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class Map_Handler extends AppCompatActivity implements MapListener, GpsStatus.Listener{
+    private volatile boolean running = true;
     Button back, up, down;
     View hiddenPanel;
     LinearLayout layout;
@@ -41,12 +44,15 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
     TextView noDel;
     Float longitude, latitude;
     String idGet;
+    ImageView noConnection;
     private MapView mMap;
     private Polygon currentCircle;
     WebSocketManager webSocketManager = WebSocketManager.getInstance();
     private IMapController controller;
     GeoPoint defaultLocation;
     private MyLocationNewOverlay mMyLocationOverlay;
+    Handler handler = new Handler();
+
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +67,14 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
         back = findViewById(R.id.backD);
         up = findViewById(R.id.up);
         down = findViewById(R.id.down);
+        noConnection = findViewById(R.id.no_connection);
 
         Log.d("WebSocket", webSocketManager.getFailed().toString());
 
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
         SharedPreferences sharedPreferencesDeliveries = getSharedPreferences("Deliveries", MODE_PRIVATE);
-        SharedPreferences sharedPreferencesLocation = getSharedPreferences("Location", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesMap = getSharedPreferences("Map", MODE_PRIVATE);
+        SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
 
         idGet = sharedPreferences.getString("id", "");
         longitude = sharedPreferences.getFloat("longitude", 0);
@@ -108,140 +116,135 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.addMapListener(this);
 
-        if (!sharedPreferencesDeliveries.getAll().isEmpty()) {
-            layout.removeAllViews();
-            layout.invalidate();
-            for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
-                try {
-                    JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
-                    Integer id = jsonObject.getInt("id");
-                    String delivery_time = jsonObject.getString("delivery_time");
-                    String status = jsonObject.getString("status");
-                    if (status.equals("Nearby")) {
-                        if (!isPanelShown()) {
-                            Button button = new Button(Map_Handler.this);
-                            runOnUiThread(() -> {
-                                button.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
-                                button.setOnClickListener(v -> {
-                                    double latitude = 0;
-                                    double longitude = 0;
-                                    for (int j = 0; j < sharedPreferencesLocation.getAll().size(); j++) {
-                                        try {
-                                            JSONObject location = new JSONObject(sharedPreferencesLocation.getString("idLocation" + j, ""));
-                                            Log.d("WebSocket", location.toString());
-                                            if (location.getInt("id") == id) {
-                                                latitude = location.getDouble("latitude");
-                                                longitude = location.getDouble("longitude");
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+        if (!sharedPreferencesConnection.getBoolean("connection", false)) {
+            if (sharedPreferencesDeliveries.getAll().isEmpty()) {
+                noDel.setVisibility(View.VISIBLE);
+            } else {
+                for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
+                        int id = jsonObject.getInt("id");
+                        String delivery_time = jsonObject.getString("delivery_time");
+                        String status = jsonObject.getString("status");
+                        if (status.equals("Nearby")) {
+                            if (!isPanelShown()) {
+                                // Retrieve the delivery's location using the id
+                                JSONObject location = new JSONObject(sharedPreferencesMap.getString("idLocation" + id, ""));
+                                double latitude = location.getDouble("latitude");
+                                double longitude = location.getDouble("longitude");
+                                ContextThemeWrapper newContext = new ContextThemeWrapper(Map_Handler.this, R.style.materialButtonStyle);
+                                Button button = layout.findViewWithTag("button" + id);
+                                if (button == null) {
+                                    button = new Button(newContext);
+                                    button.setTag("button" + id);
+                                    button.setBackgroundResource(R.drawable.round_corners);
+                                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,  // Width
+                                            LinearLayout.LayoutParams.WRAP_CONTENT   // Height
+                                    );
+                                    button.setLayoutParams(params);
+                                    layout.addView(button);
+                                }
+                                button.setVisibility(View.VISIBLE);
+                                Button finalButton1 = button;
+                                runOnUiThread(() -> {
+                                    finalButton1.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
+                                    finalButton1.setOnClickListener(v -> {
+                                        Log.e("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
+                                        GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
+                                        double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
+                                        Log.e("WebSocket", "radius: " + radius);
+                                        // If there is a current circle, remove it
+                                        if (currentCircle != null) {
+                                            mMap.getOverlays().remove(currentCircle);
                                         }
-                                    }
-                                    Log.e("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
-                                    GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
-                                    double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
-                                    Log.e("WebSocket", "radius: " + radius);
-                                    // If there is a current circle, remove it
-                                    if (currentCircle != null) {
+                                        // Create a new circle and add it to the map
+                                        currentCircle = new Polygon();
+                                        currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
+                                        currentCircle.setFillColor(getColor(R.color.blueMap));
+                                        currentCircle.setStrokeWidth(0);
                                         mMap.getOverlays().remove(currentCircle);
-                                    }
+                                        mMap.getOverlays().remove(startMarker);
 
-                                    double newLatitude = defaultLocation.getLatitude() - 0.008; // Adjust this value as needed
-                                    GeoPoint newCenter = new GeoPoint(newLatitude, defaultLocation.getLongitude());
-                                    controller.animateTo(newCenter);
-                                    controller.setZoom(16);
-                                    new Handler().postDelayed(() -> {
-                                        layout.setVisibility(View.VISIBLE);
-                                        up.setVisibility(View.GONE);
-                                    }, 170);
-                                    // Create a new circle and add it to the map
-                                    currentCircle = new Polygon();
-                                    currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
-                                    currentCircle.setFillColor(getColor(R.color.blueMap));
-                                    currentCircle.setStrokeWidth(0);
-                                    mMap.getOverlays().remove(currentCircle);
-                                    mMap.getOverlays().remove(startMarker);
+                                        mMap.getOverlays().add(currentCircle);
+                                        mMap.getOverlays().add(startMarker);
 
-                                    mMap.getOverlays().add(currentCircle);
-                                    mMap.getOverlays().add(startMarker);
-
-                                    mMap.invalidate();
+                                        mMap.invalidate();
+                                    });
+                                    layout.addView(finalButton1);
+                                    scrollView.invalidate();
                                 });
-                                layout.addView(button);
-                                scrollView.invalidate();
-                            });
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }
-        else {
-            noDel.setVisibility(View.VISIBLE);
-        }
 
-
-        if (!webSocketManager.getFailed()) {
-            final Handler handler = new Handler();
+        if (sharedPreferencesConnection.getBoolean("connection", false)) {
+            Log.d("WebSocket", "Connection successful(Map)");
             final Runnable updateUI = new Runnable() {
                 @Override
                 public void run() {
                     if (webSocketManager.getWebSocket() != null) {
-                        if (!webSocketManager.getDeliveries().isEmpty()) {
-                            sharedPreferencesLocation.edit().clear().apply();
-                            layout.removeAllViews();
-                            layout.invalidate();
-                            for (int i = 0; i < webSocketManager.getDeliveries().size(); i++) {
+                        if (!sharedPreferencesMap.getAll().isEmpty()) {
+                            for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
                                 try {
-                                    JSONObject jsonObject = webSocketManager.getDeliveries().get(i);
+                                    JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
                                     int id = jsonObject.getInt("id");
                                     String delivery_time = jsonObject.getString("delivery_time");
                                     String status = jsonObject.getString("status");
-                                    float latitude = (float) jsonObject.getDouble("latitude");
-                                    float longitude = (float) jsonObject.getDouble("longitude");
-                                    sharedPreferencesLocation.edit().putString("idLocation" + i, jsonObject.toString()).apply();
-                                    Log.d("WebSocket", "id: " + id +  " status: " + status + " latitude: " + latitude + " longitude: " + longitude);
                                     if (status.equals("Nearby")) {
-                                        Button button = new Button(Map_Handler.this);
-                                        runOnUiThread(() -> {
-                                            button.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
-                                            button.setOnClickListener(v -> {
-                                                Log.d("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
-                                                Log.d("WebSocket", "defaultLocation: " + defaultLocation);
-                                                GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
-                                                double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
-
-                                                // If there is a current circle, remove it
-                                                if (currentCircle != null) {
+                                        if (!isPanelShown()) {
+                                            // Retrieve the delivery's location using the id
+                                            JSONObject location = new JSONObject(sharedPreferencesMap.getString("idLocation" + id, ""));
+                                            double latitude = location.getDouble("latitude");
+                                            double longitude = location.getDouble("longitude");
+                                            ContextThemeWrapper newContext = new ContextThemeWrapper(Map_Handler.this, R.style.materialButtonStyle);
+                                            Button button = layout.findViewWithTag("button" + id);
+                                            if (button == null) {
+                                                button = new Button(newContext);
+                                                button.setTag("button" + id);
+                                                button.setBackgroundResource(R.drawable.round_corners);
+                                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                                        LinearLayout.LayoutParams.MATCH_PARENT,  // Width
+                                                        LinearLayout.LayoutParams.WRAP_CONTENT   // Height
+                                                );
+                                                button.setLayoutParams(params);
+                                                layout.addView(button);
+                                            }
+                                            button.setVisibility(View.VISIBLE);
+                                            Button finalButton = button;
+                                            runOnUiThread(() -> {
+                                                finalButton.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
+                                                finalButton.setOnClickListener(v -> {
+                                                    Log.e("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
+                                                    GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
+                                                    double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
+                                                    Log.e("WebSocket", "radius: " + radius);
+                                                    // If there is a current circle, remove it
+                                                    if (currentCircle != null) {
+                                                        mMap.getOverlays().remove(currentCircle);
+                                                    }
+                                                    // Create a new circle and add it to the map
+                                                    currentCircle = new Polygon();
+                                                    currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
+                                                    currentCircle.setFillColor(getColor(R.color.blueMap));
+                                                    currentCircle.setStrokeWidth(0);
                                                     mMap.getOverlays().remove(currentCircle);
-                                                }
+                                                    mMap.getOverlays().remove(startMarker);
 
-                                                double newLatitude = defaultLocation.getLatitude() - 0.008; // Adjust this value as needed
-                                                GeoPoint newCenter = new GeoPoint(newLatitude, defaultLocation.getLongitude());
-                                                controller.animateTo(newCenter);
-                                                controller.setZoom(16);
-                                                new Handler().postDelayed(() -> {
-                                                    layout.setVisibility(View.VISIBLE);
-                                                    up.setVisibility(View.GONE);
-                                                }, 170);
+                                                    mMap.getOverlays().add(currentCircle);
+                                                    mMap.getOverlays().add(startMarker);
 
-                                                currentCircle = new Polygon();
-                                                currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
-                                                currentCircle.setFillColor(getColor(R.color.blueMap));
-                                                currentCircle.setStrokeWidth(0);
-                                                mMap.getOverlays().remove(currentCircle);
-                                                mMap.getOverlays().remove(startMarker);
-
-                                                mMap.getOverlays().add(currentCircle);
-                                                mMap.getOverlays().add(startMarker);
-
-                                                mMap.invalidate();
+                                                    mMap.invalidate();
+                                                });
+                                                layout.addView(finalButton);
+                                                scrollView.invalidate();
                                             });
-                                            layout.addView(button);
-                                            scrollView.invalidate();
-                                        });
-
+                                        }
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -255,9 +258,15 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
                 }
             };
             handler.post(updateUI);
+        }else {
+            ConnectionThread connectionThread = new ConnectionThread();
+            Thread thread = connectionThread.getThread(sharedPreferencesConnection, noConnection);
+            thread.start();
         }
         back.setOnClickListener(v -> {
             finish();
+            handler.removeCallbacksAndMessages(null);
+            overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
         });
     }
 

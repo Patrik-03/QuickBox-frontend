@@ -14,16 +14,17 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.817"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintVertical_bias="0.96"
+        app:layout_constraintVertical_bias="0.782"
         tools:visibility="visible" />
 
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/orange"
+        android:background="@color/color3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.3"
@@ -43,12 +44,13 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.07"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollViewH"
-        app:layout_constraintVertical_bias="0.277"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintStart_toEndOf="@+id/scrollViewH"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.75"
+        app:layout_constraintWidth_percent="0.3"
+        style="@style/materialButtonStyle"/>
 
     <TextView
         android:id="@+id/textView"
@@ -59,7 +61,7 @@
         android:text="@string/delivery_history"
         android:textAlignment="center"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHeight_percent="0.05"
@@ -78,7 +80,8 @@
         app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintVertical_bias="0.054"
+        style="@style/materialButtonStyle"/>
 
     <TextView
         android:id="@+id/noHistory"
@@ -90,7 +93,7 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:visibility="gone"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHeight_percent="0.05"
@@ -108,10 +111,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.55"
+        app:layout_constraintHorizontal_bias="0.185"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintVertical_bias="0.097"
-        app:layout_constraintWidth_percent="0.8">
+        app:layout_constraintVertical_bias="0.266"
+        app:layout_constraintWidth_percent="0.5">
 
         <LinearLayout
             android:id="@+id/linearLayoutH"

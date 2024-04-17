@@ -27,7 +27,8 @@
         app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintVertical_bias="0.054"
+        style="@style/materialButtonStyle"/>
 
     <Button
         android:id="@+id/up"
@@ -38,14 +39,15 @@
         android:layout_alignParentBottom="true"
         android:onClick="slideUpDown"
         android:text="Up"
+        style="@style/materialButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.981"
-        app:layout_constraintWidth_percent="0.2" />
+        app:layout_constraintWidth_percent="0.09" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/hidden_panel"
@@ -53,16 +55,16 @@
         android:layout_height="0dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/map_round"
+        android:background="@drawable/alert_round"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.5"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintWidth_percent="0.4"
         tools:visibility="visible">
 
         <TextView
@@ -76,7 +78,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/scrollDel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" 
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHeight_percent="0.2"
             app:layout_constraintWidth_percent="0.8"/>
 
@@ -113,11 +115,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.115"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.007"
-            app:layout_constraintWidth_percent="0.3" />
+            app:layout_constraintWidth_percent="0.2"
+            style="@style/materialButtonStyle"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,11 @@
 package com.example.quickbox_front;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -18,9 +17,6 @@ import okhttp3.WebSocketListener;
 public class WebSocketManager {
     private static WebSocketManager instance = null;
     public Boolean failed = false;
-
-    Boolean noDeliveries = false;
-    ArrayList<JSONObject> deliveries = new ArrayList<>();
     private WebSocket webSocket;
 
     private WebSocketManager() {
@@ -34,7 +30,7 @@ public class WebSocketManager {
         return instance;
     }
 
-    public void startWebSocket(String idGet) {
+    public void startWebSocket(String idGet, SharedPreferences sharedPreferencesMap) {
         if (webSocket != null) {
             webSocket.close(1000, "Closing old connection");
             webSocket = null;
@@ -62,35 +58,25 @@ public class WebSocketManager {
             @Override
             public void onMessage(WebSocket webSocket, String text) {
                 super.onMessage(webSocket, text);
-                Log.d("WebSocket", "Message received: " + text);
-
+                Log.d("WebSocket", "Message received MAP: " + text);
                 try {
                     JSONObject jsonObject = new JSONObject(text);
-
                     if (jsonObject.has("items")) {
                         JSONArray jsonArray = jsonObject.getJSONArray("items");
-
-                        if (jsonArray.length() == 0) {
-                            noDeliveries = true;
-                        } else {
-                            noDeliveries = false;
-                            deliveries.clear();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject newDelivery = jsonArray.getJSONObject(i);
-                                int newDeliveryId = newDelivery.getInt("id");
-
-                                for (int j = 0; j < deliveries.size(); j++) {
-                                    JSONObject existingDelivery = deliveries.get(j);
-                                    int existingDeliveryId = existingDelivery.getInt("id");
-
-                                    // If the id of the new delivery matches the id of an existing delivery, remove the existing delivery
-                                    if (newDeliveryId == existingDeliveryId) {
-                                        deliveries.remove(j);
-                                        break;
-                                    }
-                                }
-                                deliveries.add(newDelivery);
-                            }
+                        Log.d("WebSocket", jsonArray.toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject delivery = jsonArray.getJSONObject(i);
+                            int id = delivery.getInt("id");
+                            String status = delivery.getString("status");
+                            sharedPreferencesMap.edit()
+                                    .putString("idLocation" + id, String.valueOf(delivery)) // Use id instead of i
+                                    .apply();
+                        }
+                    }
+                    else if (jsonObject.has("type")) {
+                        String type = jsonObject.getString("type");
+                        if (type.equals("delete")) {
+                            sharedPreferencesMap.edit().clear().apply();
                         }
                     }
                 } catch (Exception e) {
@@ -118,13 +104,9 @@ public class WebSocketManager {
         });
     }
 
-    public ArrayList<JSONObject> getDeliveries() {
-        return deliveries;
-    }
-
     public void stopWebSocket() {
         if (webSocket != null) {
-            webSocket.cancel();
+            webSocket.close(1000, "Closing connection");
         }
     }
 

@@ -101,7 +101,9 @@ public class MapSignUp_Handler extends AppCompatActivity implements MapListener,
                     returnIntent.putExtra("longitude", roundedLongitude.doubleValue()); // Pass rounded longitude value
                     setResult(RESULT_OK, returnIntent);
                     finish();
+                    overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
                 });
+                mMap.invalidate();
                 return true;
             }
 

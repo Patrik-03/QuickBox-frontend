@@ -9,14 +9,15 @@
         android:id="@+id/delivery"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/round_corners"
         android:contentDescription="image1"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="1"
+        app:layout_constraintHeight_percent="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.95" />
+        app:layout_constraintWidth_percent="0.85"
+        style="@style/materialTabStyle"/>
 
     <TextView
         android:id="@+id/textViewStatus"
@@ -24,15 +25,16 @@
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
-        android:textAlignment="viewStart"
+        android:elevation="10dp"
+        style="@style/materialTabStyle"
         app:layout_constraintBottom_toBottomOf="@+id/delivery"
         app:layout_constraintEnd_toEndOf="@+id/delivery"
         app:layout_constraintHeight_percent="0.15"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/delivery"
         app:layout_constraintTop_toBottomOf="@+id/textViewTime"
         app:layout_constraintVertical_bias="0.108"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.75" />
 
     <TextView
         android:id="@+id/textViewID"
@@ -42,13 +44,15 @@
         android:autoSizeTextType="uniform"
         android:textAlignment="viewStart"
         android:textStyle="bold"
+        android:elevation="10dp"
+        style="@style/materialTabStyle"
         app:layout_constraintBottom_toBottomOf="@+id/delivery"
         app:layout_constraintEnd_toEndOf="@+id/delivery"
         app:layout_constraintHeight_percent="0.15"
-        app:layout_constraintHorizontal_bias="0.173"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="@+id/delivery"
         app:layout_constraintTop_toTopOf="@+id/delivery"
-        app:layout_constraintVertical_bias="0.107"
+        app:layout_constraintVertical_bias="0.074"
         app:layout_constraintWidth_percent="0.5" />
 
     <TextView
@@ -58,14 +62,16 @@
         android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
         android:textAlignment="viewStart"
+        android:elevation="10dp"
+        style="@style/materialTabStyle"
         app:layout_constraintBottom_toBottomOf="@+id/delivery"
         app:layout_constraintEnd_toEndOf="@+id/delivery"
         app:layout_constraintHeight_percent="0.15"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/delivery"
         app:layout_constraintTop_toBottomOf="@+id/textViewID"
         app:layout_constraintVertical_bias="0.07"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.75"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -73,34 +79,38 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clickable="false"
+        android:elevation="10dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:progressTint="@color/orange"
+        android:progressTint="@color/color4"
         app:layout_constraintBottom_toBottomOf="@+id/delivery"
         app:layout_constraintEnd_toEndOf="@+id/delivery"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/delivery"
         app:layout_constraintTop_toBottomOf="@+id/textViewStatus"
         app:layout_constraintVertical_bias="0.437"
-        app:layout_constraintWidth_percent="0.805" />
+        app:layout_constraintWidth_percent="0.75" />
 
     <TextView
         android:id="@+id/textViewNoDelivery"
+        style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:autoSizeMaxTextSize="28sp"
         android:autoSizeTextType="uniform"
+        android:elevation="10dp"
+        android:text="@string/nodelivery"
         android:textAlignment="center"
         android:textStyle="bold"
         android:visibility="gone"
-        android:text="@string/nodelivery"
         app:layout_constraintBottom_toBottomOf="@+id/delivery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.3"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/delivery"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/delivery"
+        app:layout_constraintTop_toTopOf="@+id/delivery"
         app:layout_constraintWidth_percent="0.8"
         tools:visibility="visible" />
 

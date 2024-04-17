@@ -1,5 +1,6 @@
 package com.example.quickbox_front;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -48,8 +49,11 @@ public class MyPagerAdapter extends PagerAdapter {
             if (noDeliveries.getVisibility() == View.GONE) {
                 Intent intent = new Intent(MyPagerAdapter.this.mContext, Delivery_Handler.class);
                 intent.putExtra("id", mItems.get(position).getId());
+                intent.putExtra("type", "active");
                 MyPagerAdapter.this.mContext.startActivity(intent);
-            }
+                if (mContext instanceof Activity) {
+                    ((Activity) mContext).overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
+                }            }
         });
 
         format_time = new Format_time(mItems.get(position).getTime());

@@ -17,7 +17,7 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="logo" translatable="false">logo\n</string>
-    <string name="map" translatable="false">map</string>
+    <string name="map">Map</string>
     <string name="avatar" translatable="false">avatar</string>
     <string name="create_delivery">Send package</string>
     <string name="errorsignin">Email or password is incorrect</string>
@@ -65,5 +65,6 @@
     <string name="noitems">No items</string>
     <string name="confirm">Confirm</string>
     <string name="nodelnearby">No deliveries nearby</string>
+    <string name="backRunnig">App is running in background</string>
 
 </resources>

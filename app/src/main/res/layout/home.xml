@@ -11,27 +11,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
+        <androidx.cardview.widget.CardView
             android:id="@+id/mapH"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/round_corners"
             android:contentDescription="@string/map"
-            android:scaleType="centerInside"
-            android:src="@drawable/journey"
+            android:elevation="10dp"
+            app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
-            app:layout_constraintVertical_bias="0.441"
-            app:layout_constraintWidth_percent="0.85" />
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintWidth_percent="0.85"
+            style="@style/materialTabStyle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    android:elevation="10dp"
+                    android:src="@drawable/map" />
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/map"
+                    android:elevation="10dp"
+                    android:textAlignment="center"
+                    android:textSize="22sp"
+                    style="@style/materialTabStyle"/>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#FCAC32"
+            android:background="@color/color3"
             android:contentDescription="@string/logo"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,8 +71,7 @@
             android:id="@+id/profileH"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#FBAB32"
-            android:backgroundTint="#FBAB32"
+            android:background="@color/color3"
             android:contentDescription="@string/avatar"
             android:scaleType="centerCrop"
             android:src="@drawable/avatar"
@@ -65,13 +90,13 @@
             android:id="@+id/viewPager"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.2"
-            app:layout_constraintHorizontal_bias="0.487"
+            app:layout_constraintHeight_percent="0.25"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/createDel"
-            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintWidth_percent="1"
             tools:visibility="invisible" />
 
         <Button
@@ -83,12 +108,15 @@
             android:autoSizeTextType="uniform"
             android:text="@string/create_delivery"
             android:textAlignment="center"
+            android:elevation="10dp"
+            android:background="@drawable/round_corners"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.07"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/logo"
             app:layout_constraintWidth_percent="0.85"
-            tools:ignore="VisualLintButtonSize" />
+            tools:ignore="VisualLintButtonSize"
+            style="@style/materialButtonStyle"/>
 
         <ImageView
             android:id="@+id/no_connection"

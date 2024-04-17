@@ -36,6 +36,7 @@ public class Profile_Handler extends AppCompatActivity {
         Button language = findViewById(R.id.language);
         Button signout = findViewById(R.id.signout);
         ImageView qr_code = findViewById(R.id.qr_code);
+        ImageView noConnection = findViewById(R.id.no_connection);
 
         Log.e("Profile_Handler", "Received QR code: " + qr_codeH);
 
@@ -45,20 +46,26 @@ public class Profile_Handler extends AppCompatActivity {
 
         back.setOnClickListener(v -> {
             finish();
+            overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
         });
+        SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
+        ConnectionThread connectionThread = new ConnectionThread();
+        Thread thread = connectionThread.getThread(sharedPreferencesConnection, noConnection);
+        thread.start();
 
         signout.setOnClickListener(v -> {
             SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
+            sharedPreferencesConnection.getAll().clear();
             editor.putBoolean("isUserLoggedIn", false);
             editor.clear();
             editor.apply();
-
             // Start the sign-in activity and clear all other activities from the stack
             Intent intent = new Intent(Profile_Handler.this, SignIn_Handler.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish(); // Finish the current activity
+            overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
         });
 
 
@@ -67,6 +74,7 @@ public class Profile_Handler extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("id", idH);
             startActivity(intent);
+            overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
         });
 
         language.setOnClickListener(v -> {
@@ -76,6 +84,7 @@ public class Profile_Handler extends AppCompatActivity {
             intent.putExtra("email", emailH);
             intent.putExtra("qr_code", qr_codeH);
             startActivity(intent);
+            overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
         });
     }
     public void loadLocale() {
