@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="@color/color3"
+                android:endColor="@color/color3" />
+        </shape>
+    </item>
+
+    <item android:width="180dp" android:height="180dp" android:gravity="center">
+        <bitmap android:src="@drawable/quickbox_logo" />
+    </item>
+</layer-list>

@@ -36,7 +36,6 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class Map_Handler extends AppCompatActivity implements MapListener, GpsStatus.Listener{
-    private volatile boolean running = true;
     Button back, up, down;
     View hiddenPanel;
     LinearLayout layout;
@@ -52,6 +51,7 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
     GeoPoint defaultLocation;
     private MyLocationNewOverlay mMyLocationOverlay;
     Handler handler = new Handler();
+    SharedPreferences sharedPreferencesMap;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     @Override
@@ -73,7 +73,7 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
 
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
         SharedPreferences sharedPreferencesDeliveries = getSharedPreferences("Deliveries", MODE_PRIVATE);
-        SharedPreferences sharedPreferencesMap = getSharedPreferences("Map", MODE_PRIVATE);
+        sharedPreferencesMap = getSharedPreferences("Map", MODE_PRIVATE);
         SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
 
         idGet = sharedPreferences.getString("id", "");
@@ -115,149 +115,152 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
 
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.addMapListener(this);
-
         if (!sharedPreferencesConnection.getBoolean("connection", false)) {
-            if (sharedPreferencesDeliveries.getAll().isEmpty()) {
-                noDel.setVisibility(View.VISIBLE);
-            } else {
-                for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
-                        int id = jsonObject.getInt("id");
-                        String delivery_time = jsonObject.getString("delivery_time");
-                        String status = jsonObject.getString("status");
-                        if (status.equals("Nearby")) {
-                            if (!isPanelShown()) {
-                                // Retrieve the delivery's location using the id
-                                JSONObject location = new JSONObject(sharedPreferencesMap.getString("idLocation" + id, ""));
-                                double latitude = location.getDouble("latitude");
-                                double longitude = location.getDouble("longitude");
-                                ContextThemeWrapper newContext = new ContextThemeWrapper(Map_Handler.this, R.style.materialButtonStyle);
-                                Button button = layout.findViewWithTag("button" + id);
-                                if (button == null) {
-                                    button = new Button(newContext);
-                                    button.setTag("button" + id);
-                                    button.setBackgroundResource(R.drawable.round_corners);
-                                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.MATCH_PARENT,  // Width
-                                            LinearLayout.LayoutParams.WRAP_CONTENT   // Height
-                                    );
-                                    button.setLayoutParams(params);
-                                    layout.addView(button);
-                                }
-                                button.setVisibility(View.VISIBLE);
-                                Button finalButton1 = button;
-                                runOnUiThread(() -> {
-                                    finalButton1.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
-                                    finalButton1.setOnClickListener(v -> {
-                                        Log.e("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
-                                        GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
-                                        double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
-                                        Log.e("WebSocket", "radius: " + radius);
-                                        // If there is a current circle, remove it
-                                        if (currentCircle != null) {
-                                            mMap.getOverlays().remove(currentCircle);
-                                        }
-                                        // Create a new circle and add it to the map
-                                        currentCircle = new Polygon();
-                                        currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
-                                        currentCircle.setFillColor(getColor(R.color.blueMap));
-                                        currentCircle.setStrokeWidth(0);
-                                        mMap.getOverlays().remove(currentCircle);
-                                        mMap.getOverlays().remove(startMarker);
-
-                                        mMap.getOverlays().add(currentCircle);
-                                        mMap.getOverlays().add(startMarker);
-
-                                        mMap.invalidate();
-                                    });
-                                    layout.addView(finalButton1);
-                                    scrollView.invalidate();
-                                });
+            for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
+                try {
+                    JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
+                    int id = jsonObject.getInt("id");
+                    String delivery_time = jsonObject.getString("delivery_time");
+                    String status = jsonObject.getString("status");
+                    if (status.equals("Nearby")) {
+                        if (!isPanelShown()) {
+                            // Retrieve the delivery's location using the id
+                            JSONObject location = new JSONObject(sharedPreferencesMap.getString("idLocation" + id, ""));
+                            double latitude = location.getDouble("latitude");
+                            double longitude = location.getDouble("longitude");
+                            ContextThemeWrapper newContext = new ContextThemeWrapper(Map_Handler.this, R.style.materialButtonStyle);
+                            Button button = layout.findViewWithTag("button" + id);
+                            if (button == null) {
+                                button = new Button(newContext);
+                                button.setTag("button" + id);
+                                button.setBackgroundResource(R.drawable.round_corners);
+                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,  // Width
+                                        LinearLayout.LayoutParams.WRAP_CONTENT   // Height
+                                );
+                                params.setMargins(0, 0, 0, 30);
+                                button.setLayoutParams(params);
+                                layout.addView(button);
                             }
+                            button.setVisibility(View.VISIBLE);
+                            Button finalButton1 = button;
+                            runOnUiThread(() -> {
+                                finalButton1.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
+                                finalButton1.setOnClickListener(v -> {
+                                    Log.e("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
+                                    GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
+                                    double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
+                                    Log.e("WebSocket", "radius: " + radius);
+                                    // If there is a current circle, remove it
+                                    if (currentCircle != null) {
+                                        mMap.getOverlays().remove(currentCircle);
+                                    }
+                                    // Create a new circle and add it to the map
+                                    currentCircle = new Polygon();
+                                    currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
+                                    currentCircle.setFillColor(getColor(R.color.blueMap));
+                                    currentCircle.setStrokeWidth(0);
+                                    mMap.getOverlays().remove(currentCircle);
+                                    mMap.getOverlays().remove(startMarker);
+
+                                    mMap.getOverlays().add(currentCircle);
+                                    mMap.getOverlays().add(startMarker);
+
+                                    mMap.invalidate();
+                                });
+                                layout.addView(finalButton1);
+                                scrollView.invalidate();
+                            });
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
 
         if (sharedPreferencesConnection.getBoolean("connection", false)) {
-            Log.d("WebSocket", "Connection successful(Map)");
-            final Runnable updateUI = new Runnable() {
+            Runnable runnableCode = new Runnable() {
                 @Override
                 public void run() {
-                    if (webSocketManager.getWebSocket() != null) {
-                        if (!sharedPreferencesMap.getAll().isEmpty()) {
-                            for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
-                                    int id = jsonObject.getInt("id");
-                                    String delivery_time = jsonObject.getString("delivery_time");
-                                    String status = jsonObject.getString("status");
-                                    if (status.equals("Nearby")) {
-                                        if (!isPanelShown()) {
-                                            // Retrieve the delivery's location using the id
-                                            JSONObject location = new JSONObject(sharedPreferencesMap.getString("idLocation" + id, ""));
-                                            double latitude = location.getDouble("latitude");
-                                            double longitude = location.getDouble("longitude");
-                                            ContextThemeWrapper newContext = new ContextThemeWrapper(Map_Handler.this, R.style.materialButtonStyle);
-                                            Button button = layout.findViewWithTag("button" + id);
-                                            if (button == null) {
-                                                button = new Button(newContext);
-                                                button.setTag("button" + id);
-                                                button.setBackgroundResource(R.drawable.round_corners);
-                                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                                        LinearLayout.LayoutParams.MATCH_PARENT,  // Width
-                                                        LinearLayout.LayoutParams.WRAP_CONTENT   // Height
-                                                );
-                                                button.setLayoutParams(params);
-                                                layout.addView(button);
-                                            }
-                                            button.setVisibility(View.VISIBLE);
-                                            Button finalButton = button;
-                                            runOnUiThread(() -> {
-                                                finalButton.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
-                                                finalButton.setOnClickListener(v -> {
-                                                    Log.e("WebSocket", "latitude: " + latitude + " longitude: " + longitude);
-                                                    GeoPoint locationFromArray = new GeoPoint(latitude, longitude);
-                                                    double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
-                                                    Log.e("WebSocket", "radius: " + radius);
-                                                    // If there is a current circle, remove it
-                                                    if (currentCircle != null) {
-                                                        mMap.getOverlays().remove(currentCircle);
-                                                    }
-                                                    // Create a new circle and add it to the map
-                                                    currentCircle = new Polygon();
-                                                    currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
-                                                    currentCircle.setFillColor(getColor(R.color.blueMap));
-                                                    currentCircle.setStrokeWidth(0);
-                                                    mMap.getOverlays().remove(currentCircle);
-                                                    mMap.getOverlays().remove(startMarker);
-
-                                                    mMap.getOverlays().add(currentCircle);
-                                                    mMap.getOverlays().add(startMarker);
-
-                                                    mMap.invalidate();
-                                                });
-                                                layout.addView(finalButton);
-                                                scrollView.invalidate();
-                                            });
+                    Log.d("WebSocket", "Connection successful(Map)");
+                    Log.d("WebSocket", sharedPreferencesMap.getAll().toString());
+                    runOnUiThread(() -> {
+                        for (int i = 0; i < sharedPreferencesDeliveries.getAll().size(); i++) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
+                                int id = jsonObject.getInt("id");
+                                String delivery_time = jsonObject.getString("delivery_time");
+                                String status = jsonObject.getString("status");
+                                if (status.equals("Nearby")) {
+                                    if (!isPanelShown()) {
+                                        // Retrieve the delivery's location using the id
+                                        ContextThemeWrapper newContext = new ContextThemeWrapper(Map_Handler.this, R.style.materialButtonStyle);
+                                        Button button = layout.findViewWithTag("button" + id);
+                                        if (button == null) {
+                                            button = new Button(newContext);
+                                            button.setTag("button" + id);
+                                            button.setBackgroundResource(R.drawable.round_corners);
+                                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                                    LinearLayout.LayoutParams.MATCH_PARENT,  // Width
+                                                    LinearLayout.LayoutParams.WRAP_CONTENT   // Height
+                                            );
+                                            button.setLayoutParams(params);
+                                            layout.addView(button);
                                         }
+                                        button.setVisibility(View.VISIBLE);
+                                        Button finalButton = button;
+                                        finalButton.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
+                                        finalButton.setOnClickListener(v -> {
+                                            Runnable runnable = new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    try {
+                                                        JSONObject location = new JSONObject(sharedPreferencesMap.getString("idLocation" + id, ""));
+                                                        double latitudeC = location.getDouble("latitude");
+                                                        double longitudeC = location.getDouble("longitude");
+                                                        Log.e("WebSocket", "latitude: " + latitudeC + " longitude: " + longitudeC);
+                                                        GeoPoint locationFromArray = new GeoPoint(latitudeC, longitude);
+                                                        double radius = Math.abs(defaultLocation.distanceToAsDouble(locationFromArray));
+                                                        Log.e("WebSocket", "radius: " + radius);
+                                                        // If there is a current circle, remove it
+                                                        if (currentCircle != null) {
+                                                            mMap.getOverlays().remove(currentCircle);
+                                                        }
+                                                        // Create a new circle and add it to the map
+                                                        currentCircle = new Polygon();
+                                                        currentCircle.setPoints(Polygon.pointsAsCircle(defaultLocation, radius));
+                                                        currentCircle.setFillColor(getColor(R.color.blueMap));
+                                                        currentCircle.setStrokeWidth(0);
+                                                        mMap.getOverlays().remove(currentCircle);
+                                                        mMap.getOverlays().remove(startMarker);
+
+                                                        mMap.getOverlays().add(currentCircle);
+                                                        mMap.getOverlays().add(startMarker);
+
+                                                        mMap.invalidate();
+                                                        handler.postDelayed(this, 1000);
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            };
+                                            handler.post(runnable);
+                                        });
+                                        layout.addView(finalButton);
+                                        scrollView.invalidate();
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } else {
-                            noDel.setVisibility(View.VISIBLE);
                         }
-                    }
-                    handler.postDelayed(this, 2000);
+                    });
+                    handler.postDelayed(this, 1000);
                 }
             };
-            handler.post(updateUI);
+            handler.post(runnableCode);
         }else {
             ConnectionThread connectionThread = new ConnectionThread();
             Thread thread = connectionThread.getThread(sharedPreferencesConnection, noConnection);
@@ -284,6 +287,12 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
                     new Handler().postDelayed(() -> {
                         layout.setVisibility(View.VISIBLE);
                         up.setVisibility(View.GONE);
+                        if (sharedPreferencesMap.getAll().isEmpty()) {
+                            noDel.setVisibility(View.VISIBLE);
+                            layout.removeAllViews();
+                        } else {
+                            noDel.setVisibility(View.GONE);
+                        }
                     }, 170);
                 }
 
@@ -312,6 +321,7 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
                     new Handler().postDelayed(() -> {
                         layout.setVisibility(View.GONE);
                         up.setVisibility(View.VISIBLE);
+                        noDel.setVisibility(View.GONE);
                     }, 260);
                 }
 

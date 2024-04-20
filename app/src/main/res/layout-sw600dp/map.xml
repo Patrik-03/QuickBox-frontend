@@ -19,35 +19,32 @@
 
     <Button
         android:id="@+id/backD"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.054"
-        style="@style/materialButtonStyle"/>
+        style="@style/materialButtonStyleBack"/>
 
     <Button
         android:id="@+id/up"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/materialButtonStyleBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:onClick="slideUpDown"
-        android:text="Up"
-        style="@style/materialButtonStyle"
+        android:rotation="90"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.06"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.981"
-        app:layout_constraintWidth_percent="0.09" />
+        app:layout_constraintVertical_bias="0.981"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/hidden_panel"
@@ -80,7 +77,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHeight_percent="0.2"
-            app:layout_constraintWidth_percent="0.8"/>
+            app:layout_constraintWidth_percent="0.8"
+            style="@style/textStyle"/>
 
         <ScrollView
             android:id="@+id/scrollDel"
@@ -105,22 +103,37 @@
 
         <Button
             android:id="@+id/down"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/materialButtonStyleBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:onClick="slideUpDown"
-            android:text="Down"
+            android:rotation="-90"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.115"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.007"
-            app:layout_constraintWidth_percent="0.2"
-            style="@style/materialButtonStyle"/>
+            app:layout_constraintVertical_bias="0.007" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="TODO"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="0.997"
+        app:layout_constraintStart_toEndOf="@+id/backD"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.054"
+        app:layout_constraintWidth_percent="0.2"
+        app:srcCompat="@drawable/no_access"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

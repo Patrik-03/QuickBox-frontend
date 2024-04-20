@@ -51,7 +51,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.344"
         app:layout_constraintWidth_percent="0.3"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        style="@style/textStyle"/>
 
     <Button
         android:id="@+id/english"
@@ -89,16 +90,15 @@
 
     <Button
         android:id="@+id/backD"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.054"
-        style="@style/materialButtonStyle"/>
+        style="@style/materialButtonStyleBack"/>
 
     <TextView
         android:id="@+id/currLE"
@@ -117,7 +117,8 @@
         app:layout_constraintTop_toBottomOf="@+id/slovak"
         app:layout_constraintVertical_bias="0.059"
         app:layout_constraintWidth_percent="0.3"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        style="@style/textStyle"/>
 
     <TextView
         android:id="@+id/textView"
@@ -137,5 +138,22 @@
         app:layout_constraintTop_toTopOf="@+id/view"
         app:layout_constraintVertical_bias="0.596"
         app:layout_constraintWidth_percent="0.8" />
+
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="TODO"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/backD"
+        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintVertical_bias="0.454"
+        app:layout_constraintWidth_percent="0.2"
+        app:srcCompat="@drawable/no_access"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

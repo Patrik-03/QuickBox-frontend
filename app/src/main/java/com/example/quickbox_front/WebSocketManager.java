@@ -62,15 +62,20 @@ public class WebSocketManager {
                 try {
                     JSONObject jsonObject = new JSONObject(text);
                     if (jsonObject.has("items")) {
-                        JSONArray jsonArray = jsonObject.getJSONArray("items");
-                        Log.d("WebSocket", jsonArray.toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject delivery = jsonArray.getJSONObject(i);
-                            int id = delivery.getInt("id");
-                            String status = delivery.getString("status");
-                            sharedPreferencesMap.edit()
-                                    .putString("idLocation" + id, String.valueOf(delivery)) // Use id instead of i
-                                    .apply();
+                        if (jsonObject.getJSONArray("items").length() == 0) {
+                            sharedPreferencesMap.edit().clear().apply();
+                        }
+                        else {
+                            JSONArray jsonArray = jsonObject.getJSONArray("items");
+                            Log.d("WebSocket", jsonArray.toString());
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject delivery = jsonArray.getJSONObject(i);
+                                int id = delivery.getInt("id");
+                                String status = delivery.getString("status");
+                                sharedPreferencesMap.edit()
+                                        .putString("idLocation" + id, String.valueOf(delivery)) // Use id instead of i
+                                        .apply();
+                            }
                         }
                     }
                     else if (jsonObject.has("type")) {

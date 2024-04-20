@@ -1,0 +1,10 @@
+<resources>
+    <style name="SplashTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:scaleGravity">center</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:statusBarColor">@color/color3</item>
+        <item name="android:navigationBarColor">@color/color3</item>
+    </style>
+</resources>

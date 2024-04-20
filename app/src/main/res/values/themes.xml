@@ -30,4 +30,7 @@
     <style name="materialButtonStyleBack" parent="Theme.QuickBoxFront">
         <item name="android:background">@drawable/back_button</item>
     </style>
+    <style name="textStyle" parent="Theme.QuickBoxFront">
+        <item name="android:textColor">@color/trueBlack</item>
+    </style>
 </resources>

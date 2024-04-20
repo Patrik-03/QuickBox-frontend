@@ -101,7 +101,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.135"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintWidth_percent="0.9"
+        style="@style/textStyle"/>
 
     <TextView
         android:id="@+id/emailP"
@@ -119,7 +120,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameP"
         app:layout_constraintVertical_bias="0.25"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintWidth_percent="0.9"
+        style="@style/textStyle"/>
 
     <Button
         android:id="@+id/backP"

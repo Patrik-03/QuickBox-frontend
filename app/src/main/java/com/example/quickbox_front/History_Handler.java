@@ -55,6 +55,15 @@ public class History_Handler extends AppCompatActivity {
         SharedPreferences sharedPrefHistory = getSharedPreferences("History", MODE_PRIVATE);
         SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
 
+        if (sharedPreferencesHistory.getAll().isEmpty()) {
+            noDeliveries.setVisibility(TextView.VISIBLE);
+            delete.setVisibility(Button.GONE);
+        }
+        else {
+            noDeliveries.setVisibility(TextView.GONE);
+            delete.setVisibility(Button.VISIBLE);
+        }
+
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("ws://" + IPServer.IP + ":8000/ws/deliveries_history")
@@ -78,10 +87,6 @@ public class History_Handler extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }
-        else {
-            delete.setVisibility(Button.GONE);
-            noDeliveries.setVisibility(TextView.VISIBLE);
         }
 
         if (sharedPreferencesConnection.getBoolean("connection", false)) {
