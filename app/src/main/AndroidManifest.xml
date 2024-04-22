@@ -41,39 +41,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignIn_Handler"
-            android:screenOrientation="portrait">
+            android:name=".SignIn_Handler">
         </activity>
         <activity
-            android:name=".SignUp_Handler"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".MapSignUp_Handler"
-            android:screenOrientation="portrait"/>
+            android:name=".SignUp_Handler"/>
+        <activity android:name=".MapSignUp_Handler"/>
         <activity
             android:name=".Home_Handler"
-            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_SENDER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Profile_Handler"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Language_Handler"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".CreateDel_Handler"
-            android:screenOrientation="portrait">
+        <activity android:name=".Profile_Handler"/>
+        <activity android:name=".Language_Handler"/>
+        <activity android:name=".CreateDel_Handler">
             <meta-data
                 android:name="com.google.mlkit.vision.DEPENDENCIES"
-                android:value="barcode_ui"
-                android:screenOrientation="portrait"/>
+                android:value="barcode_ui" />
         </activity>
-        <activity android:name=".History_Handler"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Delivery_Handler"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Map_Handler"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".History_Handler"/>
+        <activity android:name=".Delivery_Handler"/>
+        <activity android:name=".Map_Handler"/>
 
     </application>
 

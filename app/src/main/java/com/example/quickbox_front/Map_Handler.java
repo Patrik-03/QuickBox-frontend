@@ -51,6 +51,7 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
     GeoPoint defaultLocation;
     private MyLocationNewOverlay mMyLocationOverlay;
     Handler handler = new Handler();
+    Runnable currentRunnable = null;
     SharedPreferences sharedPreferencesMap;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
@@ -206,6 +207,7 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
                                                     LinearLayout.LayoutParams.MATCH_PARENT,  // Width
                                                     LinearLayout.LayoutParams.WRAP_CONTENT   // Height
                                             );
+                                            params.setMargins(0, 0, 0, 30);
                                             button.setLayoutParams(params);
                                             layout.addView(button);
                                         }
@@ -213,7 +215,10 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
                                         Button finalButton = button;
                                         finalButton.setText("ID: " + id + "\n" + "Delivery time: " + delivery_time + "\n" + "Status: " + status);
                                         finalButton.setOnClickListener(v -> {
-                                            Runnable runnable = new Runnable() {
+                                            if (currentRunnable != null) {
+                                                handler.removeCallbacks(currentRunnable);
+                                            }
+                                            currentRunnable = new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     try {
@@ -246,7 +251,7 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
                                                     }
                                                 }
                                             };
-                                            handler.post(runnable);
+                                            handler.post(currentRunnable);
                                         });
                                         layout.addView(finalButton);
                                         scrollView.invalidate();

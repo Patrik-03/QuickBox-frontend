@@ -59,7 +59,7 @@ public class Delivery_Handler extends AppCompatActivity {
                         String statusText;
                         switch (statusG) {
                             case "Status: Sent":
-                                statusText = "Status: " + getString(R.string.sent);
+                                statusText = "Status: " + getString(R.string.sentS);
                                 break;
                             case "Status: Received by courier":
                                 statusText = "Status: " + getString(R.string.received);
@@ -110,7 +110,7 @@ public class Delivery_Handler extends AppCompatActivity {
                             String statusText;
                             switch (statusG) {
                                 case "Status: Sent":
-                                    statusText = "Status: " + getString(R.string.sent);
+                                    statusText = "Status: " + getString(R.string.sentS);
                                     break;
                                 case "Status: Received by courier":
                                     statusText = "Status: " + getString(R.string.received);

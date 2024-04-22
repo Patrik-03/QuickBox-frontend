@@ -65,7 +65,7 @@
         tools:visibility="visible">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/noDel"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="@string/nodelnearby"
