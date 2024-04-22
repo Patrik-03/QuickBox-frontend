@@ -263,6 +263,7 @@ public class Home_Handler extends AppCompatActivity {
                                 try {
                                     JSONObject jsonObject1 = new JSONObject(sharedPreferencesDeliveries.getString("idHome" + i, ""));
                                     if (jsonObject1.getInt("id") == Integer.parseInt(id)) {
+                                        jsonObject1.put("status", "Delivered"); // replace status with delivered
                                         sharedPreferencesHistory.edit()
                                                 .putString("idHistory" + id, String.valueOf(jsonObject1))
                                                 .apply();
