@@ -20,6 +20,40 @@
         tools:visibility="visible" />
 
     <View
+        android:id="@+id/view3"
+        style="@style/materialTabStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintHorizontal_bias="0.254"
+        app:layout_constraintStart_toEndOf="@+id/view2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.195"
+        app:layout_constraintWidth_percent="0.35" />
+
+    <CheckBox
+        android:id="@+id/economy"
+        style="@style/materialTabStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:autoSizeMaxTextSize="18sp"
+        android:autoSizeTextType="uniform"
+        android:elevation="10dp"
+        android:text="@string/economy"
+        app:layout_constraintBottom_toBottomOf="@+id/view3"
+        app:layout_constraintEnd_toEndOf="@+id/view3"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="@+id/view3"
+        app:layout_constraintTop_toBottomOf="@+id/delType"
+        app:layout_constraintVertical_bias="0.375"
+        app:layout_constraintWidth_percent="0.1" />
+
+    <View
         android:id="@+id/view2"
         style="@style/materialTabStyle"
         android:layout_width="0dp"
@@ -28,49 +62,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintHorizontal_bias="0.215"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.195"
         app:layout_constraintWidth_percent="0.3" />
-
-    <ImageButton
-        android:id="@+id/qrScan"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="#00FFFFFF"
-        android:clickable="true"
-        android:contentDescription="@string/qrScan"
-        android:elevation="10dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/view2"
-        app:layout_constraintEnd_toEndOf="@+id/view2"
-        app:layout_constraintHeight_percent="0.065"
-        app:layout_constraintHorizontal_bias="0.928"
-        app:layout_constraintStart_toStartOf="@+id/view2"
-        app:layout_constraintTop_toBottomOf="@+id/textID"
-        app:layout_constraintVertical_bias="0.339"
-        app:layout_constraintWidth_percent="0.05"
-        app:srcCompat="@drawable/qr_code" />
-
-    <TextView
-        android:id="@+id/textID"
-        style="@style/materialTabStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:autoSizeMaxTextSize="20sp"
-        android:autoSizeTextType="uniform"
-        android:elevation="10dp"
-        android:text="@string/enter_receivIDText"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/view2"
-        app:layout_constraintEnd_toEndOf="@+id/view2"
-        app:layout_constraintHeight_percent="0.04"
-        app:layout_constraintHorizontal_bias="0.21"
-        app:layout_constraintStart_toStartOf="@+id/view2"
-        app:layout_constraintTop_toTopOf="@+id/view2"
-        app:layout_constraintVertical_bias="0.179"
-        app:layout_constraintWidth_percent="0.2" />
 
     <EditText
         android:id="@+id/receivID"
@@ -92,52 +88,41 @@
         app:layout_constraintVertical_bias="0.339"
         app:layout_constraintWidth_percent="0.2" />
 
-    <View
-        android:id="@+id/view3"
-        style="@style/materialTabStyle"
+    <ImageButton
+        android:id="@+id/qrScan"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:backgroundTint="#00FFFFFF"
+        android:clickable="true"
+        android:contentDescription="@string/qrScan"
         android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintHorizontal_bias="0.201"
-        app:layout_constraintStart_toEndOf="@+id/view2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.195"
-        app:layout_constraintWidth_percent="0.35" />
-
-    <View
-        android:id="@+id/view4"
-        style="@style/materialTabStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="44dp"
-        android:elevation="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.4"
-        app:layout_constraintHorizontal_bias="0.33"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view3"
-        app:layout_constraintWidth_percent="0.7" />
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
+        app:layout_constraintHeight_percent="0.065"
+        app:layout_constraintHorizontal_bias="0.928"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toBottomOf="@+id/textID"
+        app:layout_constraintVertical_bias="0.339"
+        app:layout_constraintWidth_percent="0.05"
+        app:srcCompat="@drawable/qr_code" />
 
     <CheckBox
-        android:id="@+id/economy"
+        android:id="@+id/standard"
         style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:autoSizeMaxTextSize="18sp"
         android:autoSizeTextType="uniform"
         android:elevation="10dp"
-        android:text="@string/economy"
+        android:text="@string/standard"
         app:layout_constraintBottom_toBottomOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintHorizontal_bias="0.053"
-        app:layout_constraintStart_toStartOf="@+id/view3"
+        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintStart_toEndOf="@+id/economy"
         app:layout_constraintTop_toBottomOf="@+id/delType"
-        app:layout_constraintVertical_bias="0.269"
+        app:layout_constraintVertical_bias="0.453"
         app:layout_constraintWidth_percent="0.1" />
 
     <CheckBox
@@ -152,28 +137,10 @@
         app:layout_constraintBottom_toBottomOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintHorizontal_bias="0.085"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/standard"
         app:layout_constraintTop_toBottomOf="@+id/delType"
-        app:layout_constraintVertical_bias="0.38"
-        app:layout_constraintWidth_percent="0.1" />
-
-    <CheckBox
-        android:id="@+id/standard"
-        style="@style/materialTabStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:autoSizeMaxTextSize="18sp"
-        android:autoSizeTextType="uniform"
-        android:elevation="10dp"
-        android:text="@string/standard"
-        app:layout_constraintBottom_toBottomOf="@+id/view3"
-        app:layout_constraintEnd_toEndOf="@+id/view3"
-        app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintHorizontal_bias="0.045"
-        app:layout_constraintStart_toEndOf="@+id/economy"
-        app:layout_constraintTop_toBottomOf="@+id/delType"
-        app:layout_constraintVertical_bias="0.38"
+        app:layout_constraintVertical_bias="0.453"
         app:layout_constraintWidth_percent="0.1" />
 
     <TextView
@@ -181,7 +148,7 @@
         style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
         android:elevation="10dp"
@@ -189,44 +156,60 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.04"
-        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="@+id/view3"
         app:layout_constraintTop_toTopOf="@+id/view3"
         app:layout_constraintWidth_percent="0.15" />
 
-    <Button
-        android:id="@+id/createD"
-        style="@style/materialButtonStyle"
+    <TextView
+        android:id="@+id/textID"
+        style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:autoSizeMaxTextSize="32sp"
+        android:autoSizeMaxTextSize="20sp"
         android:autoSizeTextType="uniform"
-        android:text="@string/create"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.07"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view4"
-        app:layout_constraintVertical_bias="0.389"
-        app:layout_constraintWidth_percent="0.8"
-        tools:ignore="VisualLintButtonSize" />
+        android:elevation="10dp"
+        android:text="@string/enter_receivIDText"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
+        app:layout_constraintHeight_percent="0.04"
+        app:layout_constraintHorizontal_bias="0.21"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toTopOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.179"
+        app:layout_constraintWidth_percent="0.2" />
 
-    <Button
-        android:id="@+id/backD"
-        style="@style/materialButtonStyleBack"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:textAlignment="center"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <View
+        android:id="@+id/view4"
+        style="@style/materialTabStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="36dp"
+        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintTop_toBottomOf="@+id/view3"
+        app:layout_constraintWidth_percent="0.7" />
 
+    <TextView
+        android:id="@+id/textNote"
+        style="@style/materialTabStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeTextType="uniform"
+        android:elevation="10dp"
+        android:text="@string/noteText"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/view4"
+        app:layout_constraintHeight_percent="0.04"
+        app:layout_constraintStart_toStartOf="@+id/view4"
+        app:layout_constraintTop_toTopOf="@+id/view4"
+        app:layout_constraintWidth_percent="0.65" />
 
     <EditText
         android:id="@+id/note"
@@ -244,28 +227,44 @@
         app:layout_constraintBottom_toBottomOf="@+id/view4"
         app:layout_constraintEnd_toEndOf="@+id/view4"
         app:layout_constraintHeight_percent="0.3"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/view4"
         app:layout_constraintTop_toBottomOf="@+id/textNote"
-        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintVertical_bias="0.333"
         app:layout_constraintWidth_percent="0.65" />
 
-    <TextView
-        android:id="@+id/textNote"
-        style="@style/materialTabStyle"
+    <Button
+        android:id="@+id/createD"
+        style="@style/materialButtonStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeMaxTextSize="32sp"
         android:autoSizeTextType="uniform"
-        android:elevation="10dp"
-        android:text="@string/noteText"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/view4"
-        app:layout_constraintHeight_percent="0.04"
-        app:layout_constraintStart_toStartOf="@+id/view4"
-        app:layout_constraintTop_toTopOf="@+id/view4"
-        app:layout_constraintWidth_percent="0.65" />
+        android:text="@string/create"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.07"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view4"
+        app:layout_constraintVertical_bias="0.389"
+        app:layout_constraintWidth_percent="0.7"
+        tools:ignore="VisualLintButtonSize" />
+
+    <Button
+        android:id="@+id/backD"
+        style="@style/materialButtonStyleBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.054" />
+
 
     <ImageView
         android:id="@+id/no_connection"

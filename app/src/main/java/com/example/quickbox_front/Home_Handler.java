@@ -59,7 +59,9 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE_NOT = 1;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final int PERMISSION_REQUEST_CODE_FOREGROUND = 1;
     private WebSocket webSocket;
     DataClient dataClient;
     Handler handler = new Handler(Looper.getMainLooper());
@@ -85,7 +87,14 @@ public class Home_Handler extends AppCompatActivity {
         setContentView(R.layout.home);
         // Check request notifications permission
         if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != getPackageManager().PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE_NOT);
+        }
+        if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != getPackageManager().PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_CODE);
+        }
+        //request background service permission
+        if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) != getPackageManager().PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.FOREGROUND_SERVICE}, PERMISSION_REQUEST_CODE_FOREGROUND);
         }
 
         ImageButton profile = findViewById(R.id.profileH);
@@ -360,6 +369,7 @@ public class Home_Handler extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     private void sendDataToWearable(String data) {
         DataClient dataClient = Wearable.getDataClient(this);
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/deliveries");

@@ -9,10 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import org.json.JSONObject;
@@ -44,10 +46,11 @@ public class WebSocketForegroundService extends Service {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     public void onCreate() {
         super.onCreate();
-        registerReceiver(stopServiceReceiver, new IntentFilter(ACTION_STOP_SERVICE));
+        registerReceiver(stopServiceReceiver, new IntentFilter(ACTION_STOP_SERVICE), Context.RECEIVER_NOT_EXPORTED);
     }
 
     @Nullable
