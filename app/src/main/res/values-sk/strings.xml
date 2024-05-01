@@ -61,4 +61,5 @@
     <string name="nodelnearby">Žiadne zásielky v okolí</string>
     <string name="backRunnig">Aplikácie beží na pozadí</string>
     <string name="map">Mapa</string>
+    <string name="selectlocation">Zvoľte polohu, prosím</string>
 </resources>

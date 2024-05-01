@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.util.Locale;
 
@@ -60,6 +61,8 @@ public class Profile_Handler extends AppCompatActivity {
             editor.putBoolean("isUserLoggedIn", false);
             editor.clear();
             editor.apply();
+            Intent intentB = new Intent("com.example.quickbox_front.USER_SIGNED_OUT");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intentB);
             // Start the sign-in activity and clear all other activities from the stack
             Intent intent = new Intent(Profile_Handler.this, SignIn_Handler.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

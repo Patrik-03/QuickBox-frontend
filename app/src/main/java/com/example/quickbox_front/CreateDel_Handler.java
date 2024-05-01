@@ -1,10 +1,15 @@
 package com.example.quickbox_front;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.Manifest;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -99,12 +103,14 @@ public class CreateDel_Handler extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 progressBar.setVisibility(View.GONE);
                                 create.setVisibility(View.VISIBLE);
-                                AlertDialog alert = new AlertDialog.Builder(CreateDel_Handler.this)
-                                        .setTitle("Error")
-                                        .setMessage(getString(R.string.invalid))
-                                        .setPositiveButton("OK", null)
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .show();
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(CreateDel_Handler.this);
+                                String messageText = getString(R.string.invalid);
+                                SpannableString spannable = new SpannableString(messageText);
+                                spannable.setSpan(new ForegroundColorSpan(Color.RED), 0, messageText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE); // Set color to red
+                                builder.setMessage(spannable)
+                                        .setPositiveButton("OK", null);
+                                AlertDialog alert = builder.show();
                                 Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.alert_round);
                             });
                         } else {
@@ -201,13 +207,15 @@ public class CreateDel_Handler extends AppCompatActivity {
             && !fast.isChecked()){
                 progressBar.setVisibility(View.GONE);
                 create.setVisibility(View.VISIBLE);
-                AlertDialog alert = new AlertDialog.Builder(CreateDel_Handler.this)
-                        .setTitle("Error")
-                        .setMessage(getString(R.string.fields))
-                        .setPositiveButton("OK", null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.round_corners);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateDel_Handler.this);
+                String messageText = getString(R.string.fields);
+                SpannableString spannable = new SpannableString(messageText);
+                spannable.setSpan(new ForegroundColorSpan(Color.RED), 0, messageText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE); // Set color to red
+                builder.setMessage(spannable)
+                        .setPositiveButton("OK", null);
+                AlertDialog alert = builder.show();
+                Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.drawable.alert_round);
             }
             else {
                 try {

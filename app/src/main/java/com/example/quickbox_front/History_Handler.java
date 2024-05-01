@@ -70,10 +70,10 @@ public class History_Handler extends AppCompatActivity {
                 .build();
 
         if (!sharedPreferencesConnection.getBoolean("connection", false)) {
-            delete.setVisibility(Button.VISIBLE);
-            noDeliveries.setVisibility(TextView.GONE);
             String history = sharedPreferencesHistory.getString("historyID", null);
             if (history != null) {
+                delete.setVisibility(Button.VISIBLE);
+                noDeliveries.setVisibility(TextView.GONE);
                 try {
                     JSONObject jsonObject = new JSONObject(history);
                     JSONArray jsonArray = jsonObject.getJSONArray("items");
@@ -86,6 +86,10 @@ public class History_Handler extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+            else {
+                noDeliveries.setVisibility(TextView.VISIBLE);
+                delete.setVisibility(Button.GONE);
             }
         }
 
@@ -118,7 +122,7 @@ public class History_Handler extends AppCompatActivity {
                     try {
                         // Parse the JSON string into a JSONObject
                         JSONObject jsonObject = new JSONObject(text);
-                        sharedPreferencesHistory.getAll().clear();
+                        sharedPrefHistory.getAll().clear();
                         JSONArray jsonArray = jsonObject.getJSONArray("items");
                         JSONObject receivedMessage2 = jsonArray.getJSONObject(0);
                         String type = receivedMessage2.getString("type");
@@ -186,17 +190,19 @@ public class History_Handler extends AppCompatActivity {
             overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
         });
         delete.setOnClickListener(v -> {
-            delete.setVisibility(Button.GONE);
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-            sharedPreferencesHistory.edit().clear().apply();
-            sharedPrefHistory.edit().clear().apply();
-            JSONObject message = new JSONObject();
-            try {
-                message.put("id", user_id);
-                message.put("type", "delete");
-                webSocket.send(message.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (sharedPreferencesConnection.getBoolean("connection", false)) {
+                delete.setVisibility(Button.GONE);
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                sharedPreferencesHistory.edit().clear().apply();
+                sharedPrefHistory.edit().clear().apply();
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("id", user_id);
+                    message.put("type", "delete");
+                    webSocket.send(message.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

@@ -19,6 +19,24 @@
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintWidth_percent="1"/>
 
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="TODO"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/nameP"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.688"
+        app:layout_constraintWidth_percent="0.24"
+        app:srcCompat="@drawable/no_access"
+        tools:visibility="visible" />
+
     <Button
         android:id="@+id/history"
         android:layout_width="0dp"
@@ -134,21 +152,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.054"/>
-
-    <ImageView
-        android:id="@+id/no_connection"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/nameP"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.08"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.534"
-        app:layout_constraintWidth_percent="0.2"
-        app:srcCompat="@drawable/no_access"
-        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

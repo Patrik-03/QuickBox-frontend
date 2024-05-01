@@ -1,6 +1,10 @@
 package com.example.quickbox_front;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -20,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
@@ -69,6 +74,9 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
         up = findViewById(R.id.up);
         down = findViewById(R.id.down);
         noConnection = findViewById(R.id.no_connection);
+        LocalBroadcastManager.getInstance(this).registerReceiver(dataChangeReceiver,
+                new IntentFilter("com.example.quickbox_front.DATA_CHANGED"));
+
 
         Log.d("WebSocket", webSocketManager.getFailed().toString());
 
@@ -277,6 +285,20 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
             overridePendingTransition(R.anim.enter_animation_back, R.anim.exit_animation_back);
         });
     }
+    private BroadcastReceiver dataChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //remove button with that ID
+            String id = intent.getStringExtra("id");
+            Button button = layout.findViewWithTag("button" + id);
+            if (button != null) {
+                layout.removeView(button);
+            }
+            if (layout.getChildCount() == 0) {
+                noDel.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     public void slideUpDown(final View view) {
         if (!isPanelShown()) {
@@ -364,5 +386,10 @@ public class Map_Handler extends AppCompatActivity implements MapListener, GpsSt
     @Override
     public void onGpsStatusChanged(int event) {
 
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(dataChangeReceiver);
     }
 }

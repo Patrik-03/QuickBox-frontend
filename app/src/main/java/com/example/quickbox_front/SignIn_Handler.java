@@ -1,10 +1,15 @@
 package com.example.quickbox_front;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -19,6 +24,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +43,9 @@ public class SignIn_Handler extends AppCompatActivity {
     Handler handler = new Handler();
     boolean openConnection = false, previousConnectionFailed = false;
     private WebSocket webSocket;
+    ImageView no_connection;
+    ProgressBar progressBar;
+    Button signin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +54,9 @@ public class SignIn_Handler extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("User", MODE_PRIVATE);
         SharedPreferences sharedPreferencesConnection = getSharedPreferences("Connection", MODE_PRIVATE);
         boolean isUserLoggedIn = sharedPreferences.getBoolean("isUserLoggedIn", false);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(userSignedUp,
+                new IntentFilter("com.example.quickbox_front.USER_SIGNED_UP"));
 
         if (isUserLoggedIn) {
             // If user is already logged in, start Home_Handler activity
@@ -56,13 +68,16 @@ public class SignIn_Handler extends AppCompatActivity {
         loadLocale();
         setContentView(R.layout.signin);
 
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeReceiver, filter);
+
         EditText email = findViewById(R.id.editTextTextEmailAddress);
         EditText password = findViewById(R.id.editTextTextPassword);
-        ProgressBar progressBar = findViewById(R.id.progressBarUp);
-        Button signin = findViewById(R.id.signinB);
+        progressBar = findViewById(R.id.progressBarUp);
+        signin = findViewById(R.id.signinB);
         TextView textcreate = findViewById(R.id.createacc);
         TextView signup = findViewById(R.id.signupB);
-        ImageView no_connection = findViewById(R.id.no_connection);
+        no_connection = findViewById(R.id.no_connection);
         //underline signup text
         signup.setPaintFlags(signup.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
         // Connect to WebSocket server
@@ -151,7 +166,11 @@ public class SignIn_Handler extends AppCompatActivity {
                 @Override
                 public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                    Log.e("WebSocket", "Connection failed: " + t.getMessage());
-                    runOnUiThread(() -> no_connection.setVisibility(View.VISIBLE));
+                    runOnUiThread(() -> {
+                        no_connection.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        signin.setVisibility(View.VISIBLE);
+                    });
                     handler.removeCallbacksAndMessages(null);
                     webSocket.close(1000, "Closing the connection");
                     sharedPreferencesConnection.getAll().clear();
@@ -191,19 +210,21 @@ public class SignIn_Handler extends AppCompatActivity {
 
 
         signin.setOnClickListener(v -> {
-            signin.setVisibility(View.GONE);
-            signup.setVisibility(View.GONE);
-            textcreate.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("signInEmail", email.getText().toString());
-                jsonObject.put("signInPassword", password.getText().toString());
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+            if (sharedPreferencesConnection.getBoolean("connection", false)) {
+                signin.setVisibility(View.GONE);
+                signup.setVisibility(View.GONE);
+                textcreate.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("signInEmail", email.getText().toString());
+                    jsonObject.put("signInPassword", password.getText().toString());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                // Send credentials to server
+                webSocket.send(jsonObject.toString());
             }
-            // Send credentials to server
-            webSocket.send(jsonObject.toString());
         });
     }
     @Override
@@ -231,8 +252,36 @@ public class SignIn_Handler extends AppCompatActivity {
         conf.locale = locale;
         res.updateConfiguration(conf, dm);
     }
+    private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                openConnection = true;
+                runOnUiThread(() -> {
+                    no_connection.setVisibility(View.GONE);
+                });
+            } else {
+                openConnection = false;
+                runOnUiThread(() -> {
+                    no_connection.setVisibility(View.VISIBLE);
+                });
+            }
+        }
+    };
+    private BroadcastReceiver userSignedUp = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Close the WebSocket connection here
+            if (webSocket != null) {
+                webSocket.close(1000, "User signed out");
+            }
+        }
+    };
 
-        public void closeWebSocketConnection() {
+    public void closeWebSocketConnection() {
         if (webSocket != null) {
             webSocket.close(1000, "Closing the connection");
         }

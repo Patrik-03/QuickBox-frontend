@@ -66,5 +66,6 @@
     <string name="confirm">Confirm</string>
     <string name="nodelnearby">No deliveries nearby</string>
     <string name="backRunnig">App is running in background</string>
+    <string name="selectlocation">Please select location</string>
 
 </resources>

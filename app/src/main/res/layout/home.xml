@@ -122,18 +122,19 @@
             android:id="@+id/no_connection"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:contentDescription="TODO"
+            android:scaleType="fitCenter"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/logo"
             app:layout_constraintEnd_toEndOf="@+id/logo"
-            app:layout_constraintHeight_percent="0.08"
+            app:layout_constraintHeight_percent="0.06"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/logo"
-            app:layout_constraintVertical_bias="0.132"
-            app:layout_constraintWidth_percent="0.2"
+            app:layout_constraintVertical_bias="0.163"
+            app:layout_constraintWidth_percent="0.24"
             app:srcCompat="@drawable/no_access"
-            tools:visibility="visible"
-            android:contentDescription="TODO" />
+            tools:visibility="visible" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

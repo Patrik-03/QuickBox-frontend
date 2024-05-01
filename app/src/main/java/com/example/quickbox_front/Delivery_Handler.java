@@ -90,6 +90,7 @@ public class Delivery_Handler extends AppCompatActivity {
         else {
             SharedPreferences sharedPreferencesHistory = getSharedPreferences("History", MODE_PRIVATE);
             Map<String, ?> allEntries = sharedPreferencesHistory.getAll();
+            Log.d("WebSocket", allEntries.toString());
             for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                 if (entry.getKey().startsWith("idHistory" + id)) {
                     try {

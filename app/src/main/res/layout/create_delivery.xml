@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     android:background="#00FFFFFF">
 
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="TODO"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.833"
+        app:layout_constraintWidth_percent="0.24"
+        app:srcCompat="@drawable/no_access"
+        tools:visibility="visible" />
+
     <ProgressBar
         android:id="@+id/progressBarUp"
         android:layout_width="95dp"
@@ -176,14 +194,15 @@
 
     <CheckBox
         android:id="@+id/economy"
+        style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:autoSizeMaxTextSize="18sp"
         android:autoSizeTextType="uniform"
-        android:text="@string/economy"
-        style="@style/materialTabStyle"
         android:elevation="10dp"
+        android:text="@string/economy"
+        android:textColorLink="@color/color4"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.055"
         app:layout_constraintHorizontal_bias="0.102"
@@ -193,14 +212,15 @@
 
     <CheckBox
         android:id="@+id/standard"
+        style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:autoSizeMaxTextSize="18sp"
         android:autoSizeTextType="uniform"
-        android:text="@string/standard"
-        style="@style/materialTabStyle"
         android:elevation="10dp"
+        android:text="@string/standard"
+        android:textColorLink="@color/color4"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.055"
         app:layout_constraintHorizontal_bias="0.102"
@@ -210,14 +230,15 @@
 
     <CheckBox
         android:id="@+id/fast"
+        style="@style/materialTabStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:autoSizeMaxTextSize="18sp"
         android:autoSizeTextType="uniform"
-        android:text="@string/fast"
-        style="@style/materialTabStyle"
         android:elevation="10dp"
+        android:text="@string/fast"
+        android:textColorLink="@color/color4"
         app:layout_constraintEnd_toEndOf="@+id/view3"
         app:layout_constraintHeight_percent="0.055"
         app:layout_constraintHorizontal_bias="0.102"
@@ -262,20 +283,5 @@
         app:layout_constraintVertical_bias="0.191"
         app:layout_constraintWidth_percent="0.8" />
 
-    <ImageView
-        android:id="@+id/no_connection"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/view2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.08"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.638"
-        app:layout_constraintWidth_percent="0.2"
-        app:srcCompat="@drawable/no_access"
-        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

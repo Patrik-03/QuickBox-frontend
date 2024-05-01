@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -15,6 +17,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,14 +38,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.DataClient;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import org.json.JSONArray;
@@ -51,6 +55,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -60,8 +65,8 @@ import okhttp3.WebSocketListener;
 
 public class Home_Handler extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE_NOT = 1;
-    private static final int PERMISSION_REQUEST_CODE = 1;
-    private static final int PERMISSION_REQUEST_CODE_FOREGROUND = 1;
+    private static final int PERMISSION_REQUEST_CODE = 2;
+    private static final int PERMISSION_REQUEST_CODE_FOREGROUND = 3;
     private WebSocket webSocket;
     DataClient dataClient;
     Handler handler = new Handler(Looper.getMainLooper());
@@ -96,6 +101,12 @@ public class Home_Handler extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) != getPackageManager().PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.FOREGROUND_SERVICE}, PERMISSION_REQUEST_CODE_FOREGROUND);
         }
+
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeReceiver, filter);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(userSignedOutReceiver,
+                new IntentFilter("com.example.quickbox_front.USER_SIGNED_OUT"));
 
         ImageButton profile = findViewById(R.id.profileH);
         Button create = findViewById(R.id.createDel);
@@ -193,6 +204,7 @@ public class Home_Handler extends AppCompatActivity {
             @Override
             public void onMessage(WebSocket webSocket, String text) {
                 openConnection = true;
+                Log.d("WebSocket", "Message received (Home): " + text);
                 runOnUiThread(() -> no_connection.setVisibility(View.GONE));
                 sharedPreferencesConnection.getAll().clear();
                 sharedPreferencesConnection.edit().putBoolean("connection", true).apply();
@@ -211,7 +223,7 @@ public class Home_Handler extends AppCompatActivity {
                     } else if (jsonObject.has("items")) {
                         try {
                             JSONArray jsonArray = jsonObject.getJSONArray("items");
-                            sendDataToWearable(jsonArray.toString());
+                            //sendDataToWearable(jsonArray.toString());
 
                             items.clear();
                             sharedPreferencesDeliveries.edit().clear().apply();
@@ -267,6 +279,11 @@ public class Home_Handler extends AppCompatActivity {
                                         sharedPreferencesHistory.edit()
                                                 .putString("idHistory" + id, String.valueOf(jsonObject1))
                                                 .apply();
+
+                                        // Send a broadcast to notify that the data has changed
+                                        Intent intent = new Intent("com.example.quickbox_front.DATA_CHANGED");
+                                        intent.putExtra("id", id);
+                                        LocalBroadcastManager.getInstance(Home_Handler.this).sendBroadcast(intent);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -346,6 +363,7 @@ public class Home_Handler extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userSignedOutReceiver);
         if (isBound) {
             unbindService(serviceConnection);
             isBound = false;
@@ -371,16 +389,40 @@ public class Home_Handler extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
-    private void sendDataToWearable(String data) {
-        DataClient dataClient = Wearable.getDataClient(this);
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/deliveries");
-        putDataMapReq.getDataMap().putString("message", data);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest().setUrgent();
-        Task<DataItem> putDataTask = dataClient.putDataItem(putDataReq);
-        putDataTask.addOnSuccessListener(dataItem -> Log.d("WebSocket", "Data item set: " + dataItem));
-        putDataTask.addOnFailureListener(e -> Log.e("WebSocket", "Failed to set data item: " + e.getMessage()));
+    private void sendDataToWearable(String text) {
+        Node node = getNodes().get(0);
+        String nodeId = node.getId();
+        String nodeName = node.getDisplayName();
+        byte[] data = text.getBytes();
+        float sizeInKB = data.length / 1024f;  // Convert bytes to kilobytes
+
+        Log.d("WebSocket", "Size of message: " + sizeInKB + " kB");
+
+        Task<Integer> sendTask = Wearable.getMessageClient(this).sendMessage(
+                nodeId,
+                "/deploy",
+                text.getBytes()
+        );
+
+        sendTask.addOnSuccessListener(result -> {
+            Log.d("WebSocket", "Data item set: " + result);
+            Log.d("WebSocket", "Sent to device: " + nodeName);
+        });
+
+        sendTask.addOnFailureListener(e -> Log.e("WebSocket", "Failed to set data item: " + e.getMessage()));
     }
-        public void showNotification(Context context, String title, String message, Intent intent, int reqCode) {
+
+    private List<Node> getNodes() {
+        try {
+            return Tasks.await(Wearable.getNodeClient(this).getConnectedNodes());
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void showNotification(Context context, String title, String message, Intent intent, int reqCode) {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         String CHANNEL_ID = "QuickBox";
@@ -423,6 +465,47 @@ public class Home_Handler extends AppCompatActivity {
         conf.locale = locale;
         res.updateConfiguration(conf, dm);
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE_NOT) {
+            // When we receive result from the first permission request, we request the second permission
+            if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != getPackageManager().PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_CODE);
+            }
+        } else if (requestCode == PERMISSION_REQUEST_CODE) {
+            // When we receive result from the second permission request, we request the third permission
+            if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) != getPackageManager().PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.FOREGROUND_SERVICE}, PERMISSION_REQUEST_CODE_FOREGROUND);
+            }
+        }
+    }
+    private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                openConnection = true;
+                runOnUiThread(() -> no_connection.setVisibility(View.GONE));
+            } else {
+                openConnection = false;
+                runOnUiThread(() -> no_connection.setVisibility(View.VISIBLE));
+            }
+        }
+    };
+    private BroadcastReceiver userSignedOutReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Close the WebSocket connection here
+            if (webSocket != null) {
+                webSocketManager.stopWebSocket();
+                webSocket.close(1000, "User signed out");
+            }
+        }
+    };
+
 
     private void refreshData() {
         JSONObject jsonObject = new JSONObject();

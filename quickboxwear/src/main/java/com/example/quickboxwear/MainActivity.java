@@ -1,5 +1,6 @@
 package com.example.quickboxwear;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
     private LinearLayout mainLayout;
     SharedPreferences preferences;
     private BroadcastReceiver receiver;
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
@@ -36,6 +38,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainlayout);
         new ConnectTask().execute();
+        if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != getPackageManager().PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_CODE);
+        }
 
         startService(new Intent(this, DataLayerListenerService.class));
         mainLayout = findViewById(R.id.linearLayout);
